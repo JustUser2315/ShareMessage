@@ -15,9 +15,6 @@
     <label>Password:
       <input type="password" name="password">
     </label><br>
-    <select name="roles" multiple>Role:
-      <option th:each="role : ${roles}" th:value="${role.getName()}" th:text="${role.getName()}"></option>
-    </select>
     <div th:if="${errors}">
       <p th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red">Error message</p>
     </div>

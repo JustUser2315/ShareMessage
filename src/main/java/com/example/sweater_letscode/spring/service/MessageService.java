@@ -11,9 +11,10 @@ import com.example.sweater_letscode.spring.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,18 @@ public class MessageService {
     public MessageReadDto save(MessageEditDto messageEditDto){
        var savedMessage = messageRepository.save(messageEditToEntityMapper.map(messageEditDto));
        return messageEntityToReadMapper.map(savedMessage);
+    }
+
+    public List<MessageReadDto> findAllByAuthorId(Long id) {
+        return messageRepository.findAllByAuthorId(id)
+                .stream().map(messageEntityToReadMapper::map)
+                .toList();
+    }
+
+    @Transactional
+    public boolean delete(Integer id) {
+        messageRepository.deleteById(id);
+        messageRepository.flush();
+        return messageRepository.findById(id).isEmpty();
     }
 }

@@ -5,12 +5,12 @@ import com.example.sweater_letscode.spring.entity.Role;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoleEntityToReadMapper implements MyCustomMapper<Role, RoleReadDto> {
+public class RoleReadToEntityMapper implements MyCustomMapper<RoleReadDto, Role>{
     @Override
-    public RoleReadDto map(Role role) {
-        return RoleReadDto.builder()
-                .id(role.getId())
-                .name(role.getName())
+    public Role map(RoleReadDto roleReadDto) {
+        return Role.builder()
+                .id(roleReadDto.getId())
+                .name(roleReadDto.getName())
                 .build();
     }
 }

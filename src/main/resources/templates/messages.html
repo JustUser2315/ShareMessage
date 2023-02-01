@@ -5,6 +5,7 @@
     <title>Messages</title>
 </head>
 <body>
+<div th:insert="~{my_profile_fragment}"></div>
 <div th:insert="~{logout_fragment}"></div>
 <form th:action="@{/messages}" th:method="POST">
     <label>
@@ -47,5 +48,12 @@
     <div th:each="message : ${messages.getContent()}" th:text="|${message.getId()}. ${message.getText()} ('#'${message.getTag()}) ${message.getAuthorUsername()}|"></div>
 
 </form>
+<div>
+    <a th:href="@{/user/{id}/profile/messages(id=${user.get().id})}">See all my messages</a>
+</div>
+<div>
+    <a th:if="${user.get().getRoles().contains(role)}" th:href="@{/admin/users}">See list of users</a>
+</div>
+
 </body>
 </html>

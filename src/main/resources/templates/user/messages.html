@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My messages</title>
+</head>
+<body>
+<table>
+    <tr>
+    <th>Message data</th>
+    <th>Delete</th>
+    </tr>
+    <tr th:each="message : ${userMessages}">
+        <td> <p th:text="|${message.getId()}. ${message.getText()} ('#'${message.getTag()})|"></p> </td>
+        <td>
+            <div>
+                <form th:action="@{/messages/{id}/delete_message(id=${message.id})}" th:method="post">
+                    <button type="submit">delete</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+
+
+</body>
+</html>

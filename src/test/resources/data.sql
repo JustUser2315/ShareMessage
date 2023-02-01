@@ -19,5 +19,5 @@ SELECT SETVAL('roles_id_seq', (select max(id) from roles));
 
 
 insert into users_roles(user_id, role_id)
-values (1, 1);
---        (1, 2);
+values (1, 1),
+       (1, 2);

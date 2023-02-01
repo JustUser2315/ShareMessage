@@ -1,28 +1,17 @@
 package com.example.sweater_letscode.spring.repository;
 
 import com.example.sweater_letscode.spring.TestBaseApplication;
-import com.example.sweater_letscode.spring.dto.MessageEditDto;
 import com.example.sweater_letscode.spring.entity.Message;
-import com.example.sweater_letscode.spring.entity.Role;
 import com.example.sweater_letscode.spring.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
@@ -71,6 +60,11 @@ class MessageRepositoryTest extends TestBaseApplication {
         var expectedResult = messageRepository.findAll();
         Assertions.assertThat(expectedResult).hasSize(2);
 
+    }
+    @Test
+    void findAllByAuthorId(){
+        var expectedResult = messageRepository.findAllByAuthorId(1L);
+        Assertions.assertThat(expectedResult).hasSize(3);
     }
 
 }

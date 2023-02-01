@@ -3,12 +3,10 @@ package com.example.sweater_letscode.spring.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-import javax.validation.Constraint;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +17,6 @@ public class UserEditDto {
     private String username;
     @Size(min = 8, message = "Minimum 8 characters in password")
     private String password;
-    private List<RoleReadDto> roles;
+    private boolean active = true;
+    private Set<RoleEditDto> roles;
 }

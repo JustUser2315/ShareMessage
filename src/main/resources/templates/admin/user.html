@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>User Info</title>
+</head>
+<body>
+
+Roles:
+<table>
+    <tr>
+        <th>Role name</th>
+        <th>Delete</th>
+    </tr>
+    <tr th:each="role :${user.getRoles()}">
+        <td><p th:text="${role.getName()}"/></td>
+        <td>
+            <div>
+                <form th:action="@{/admin/users/{id}/delete_role/{role_id}(id=${user.id}, role_id=${role.getId()})}"
+                      method="post">
+                    <button type="submit">delete role</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+</table>
+<br>
+
+<form th:object="${user}" th:action="@{/admin/users/{id}(id = ${user.getId()})}" th:method="post">
+    <p th:text="|Id: *{getId()}|"></p>
+    <p th:text="|Username: *{getUsername()}|"></p>
+    <p th:text="|Acrive: *{isActive()}|"></p>
+    <label>Change activity:
+        <select name="active" th:value="*{isActive()}">
+            <option>true</option>
+            <option>false</option>
+        </select>
+    </label><br>
+
+    <h1>Set role:</h1>
+    <label>
+        <select name="roles" multiple>
+            <option th:each="role : ${roles}" th:value="${role.getName()}"><p th:text="${role.getName()}"></p></option>
+        </select>
+    </label><br>
+    <button type="submit">Change user data</button>
+</form>
+
+
+<div th:object="${user}">
+    <form th:action="@{/admin/users/{id}/delete_user(id=*{id})}" method="post">
+        <button type="submit">Delete this user</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -9,12 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
@@ -24,10 +22,10 @@ class LoginControllerTest extends TestBaseApplication {
 private final MockMvc mockMvc;
     @Test
     @WithMockUser(username = "username2", password = "password2")
-    void loginPageGet() throws Exception {
+    void loginPage() throws Exception {
         mockMvc.perform(get("/messages"))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.view().name("messages"));
+                .andExpectAll(status().is2xxSuccessful(),
+                view().name("messages"));
 
     }
 }

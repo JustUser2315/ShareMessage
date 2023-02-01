@@ -1,24 +1,16 @@
 package com.example.sweater_letscode.spring.controller;
 
 import com.example.sweater_letscode.spring.TestBaseApplication;
-import com.example.sweater_letscode.spring.dto.RoleReadDto;
-import com.example.sweater_letscode.spring.dto.UserEditDto;
-import com.example.sweater_letscode.spring.repository.RoleRepository;
 import com.example.sweater_letscode.spring.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
@@ -36,14 +28,21 @@ class RegistrationControllerTest extends TestBaseApplication {
     }
 
     @Test
-    void registrationNewUser() throws Exception {
+    void registrationNewUserSuccessful() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/registration")
-                        .param("username", "usernameTest")
-                        .param("password", "passwordTest")
-                        .param("roles", "rolesTest")
-                        .servletPath("/registration"))
+                        .param("username", "test@m.com")
+                        .param("password", "password1"))
                 .andExpectAll(MockMvcResultMatchers.status().is3xxRedirection(),
-                              MockMvcResultMatchers.redirectedUrl("/login"));
+                        MockMvcResultMatchers.redirectedUrl("/login"));
+
+    }
+    @Test
+    void registrationNewUserFailure() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/registration")
+                        .param("username", "testUsername")
+                        .param("password", "1234567"))
+                .andExpectAll(MockMvcResultMatchers.status().is3xxRedirection(),
+                        MockMvcResultMatchers.redirectedUrl("/registration"));
 
     }
 }

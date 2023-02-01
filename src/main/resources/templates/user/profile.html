@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My profile</title>
+</head>
+<body>
+<div th:insert="~{logout_fragment}"/>
+<div>
+    <form th:action="@{/user/{id}/profile(id=${user.id})}" th:method="post" th:object="${user}">
+        <p th:text="|Id: *{getId()}|"></p>
+        <p th:text="|Username: *{getUsername()}|"></p>
+        <p th:text="|Acrive: *{isActive()}|"></p>
+        <label>Roles:
+            <p th:each="role :*{getRoles()}" th:text="|${role.getName()}|" name="roleName"
+               th:value="${role.getName()}"></p>
+        </label><br>
+
+        <label>Username:
+            <input type="text" name="username" th:value="${user.getUsername()}">
+        </label><br>
+        <button type="submit">Update my data</button>
+    </form>
+</div>
+
+<div th:object="${user}">
+    <a th:href="@{/user/{id}/profile/update_password(id=*{id})}" style="">Change password</a>
+</div>
+
+<div th:object="${user}">
+    <form th:action="@{/user/{id}/profile/delete_account(id=*{id})}" th:method="post">
+        <button type="submit">Delete my account</button>
+    </form>
+</div>
+
+</body>
+</html>

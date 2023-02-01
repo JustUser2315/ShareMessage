@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+<body>
+<form th:action="@{/admin/users}">
+  Filter:
+  <div>
+    <label>Username:
+      <input type="text" name="username" th:value="${filter.getUsername()}">
+    </label>
+    <label>Active:
+      <input type="text" name="active" th:value="true">
+    </label>
+<!--    <label>Roles:-->
+<!--      <input type="text" name="roles" th:value="${filter.getRoles()}">-->
+<!--    </label>-->
+    <button type="submit">Filter</button>
+  </div>
+  Page:
+  <div>
+    <label>Page:
+      <input type="number" name="page" th:value="${users.getMetadata().getNumberOfPage()}">
+    </label>
+    <label>Size:
+      <input type="number" name="size" th:value="${users.getMetadata().getSize()}">
+    </label>
+    <button type="submit">Page</button>
+  </div>
+</form>
+
+<h1 style="color: darkorange">List of users:</h1>
+<div>
+  <form th:action="@{/admin/users}" method="post">
+    <table>
+      <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Is active</th>
+        <th>Roles</th>
+      </tr>
+      <tr th:each="user:${users.getContent()}" th:object="${user}">
+        <td><p th:text="*{getId()}" ></p></td>
+        <td><p th:text="*{getUsername()}" ></p></td>
+        <td><p th:text="*{isActive()}" ></p></td>
+        <td>
+            <p th:each="role: *{getRoles()}" th:text="${role.getName().replace('ROLE_', '').toLowerCase()}"></p>
+        </td>
+        <td><a th:href="@{/admin/users/{id}(id = *{getId()})}">data</a></td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>

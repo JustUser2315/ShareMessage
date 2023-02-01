@@ -1,16 +1,16 @@
 package com.example.sweater_letscode.spring.controller;
 
-import com.example.sweater_letscode.spring.dto.RoleReadDto;
 import com.example.sweater_letscode.spring.dto.UserEditDto;
-import com.example.sweater_letscode.spring.entity.Role;
 import com.example.sweater_letscode.spring.service.RoleService;
 import com.example.sweater_letscode.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -37,4 +37,6 @@ public class RegistrationController {
         userService.registration(userEditDto);
         return "redirect:/login";
     }
+
+
 }

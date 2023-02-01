@@ -27,8 +27,10 @@ public class MySecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(auth-> auth
-                        .antMatchers("/", "/registration", "/login", "/registration", "/messages").permitAll()
-                        .antMatchers("/messages").hasAnyRole("USER", "ADMIN"))
+                        .antMatchers("/", "/registration", "/login", "/registration").permitAll()
+                        .antMatchers("/messages").hasAnyRole("USER", "ADMIN")
+                        .antMatchers("/admin/**").hasRole("ADMIN")
+                        .antMatchers("/user/**").hasAnyRole("USER", "ADMIN"))
                 .logout(logout->logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/login"))
                 .formLogin(login->login

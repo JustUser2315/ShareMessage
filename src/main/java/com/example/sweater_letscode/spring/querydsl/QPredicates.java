@@ -2,9 +2,9 @@ package com.example.sweater_letscode.spring.querydsl;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -23,7 +23,16 @@ public class QPredicates {
         }
         return this;
     }
+
+
     public Predicate build(){
         return ExpressionUtils.allOf(predicates);
+    }
+
+    public QPredicates addC(BooleanExpression role_new) {
+        if(role_new != null){
+            predicates.add(role_new);
+        }
+        return this;
     }
 }

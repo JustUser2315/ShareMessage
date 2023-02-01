@@ -21,4 +21,5 @@ public class RoleService {
                 .stream().map(roleEntityToReadMapper::map)
                 .toList();
     }
+
 }
