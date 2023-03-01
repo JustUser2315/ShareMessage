@@ -5,51 +5,57 @@
     <title>User Info</title>
 </head>
 <body>
-
-Roles:
-<table>
-    <tr>
-        <th>Role name</th>
-        <th>Delete</th>
-    </tr>
-    <tr th:each="role :${user.getRoles()}">
-        <td><p th:text="${role.getName()}"/></td>
-        <td>
-            <div>
-                <form th:action="@{/admin/users/{id}/delete_role/{role_id}(id=${user.id}, role_id=${role.getId()})}"
-                      method="post">
-                    <button type="submit">delete role</button>
-                </form>
-            </div>
-        </td>
-    </tr>
-</table>
-<br>
+<th:block th:insert="~{fragments/header_fragment::logout}"/>
+<h1 style="color: brown">User Data</h1>
 
 <form th:object="${user}" th:action="@{/admin/users/{id}(id = ${user.getId()})}" th:method="post">
-    <p th:text="|Id: *{getId()}|"></p>
-    <p th:text="|Username: *{getUsername()}|"></p>
-    <p th:text="|Acrive: *{isActive()}|"></p>
-    <label>Change activity:
+    <th:block th:if="*{getAvatar()!=null}">
+        <img th:src="@{/user/{id}/profile/avatar(id=${user.id})}" alt="User avatar" width="80" height="80"/>
+    </th:block><br>
+
+    <p th:text="|Id: *{getId()} Username: *{getUsername()} Email: *{getEmail()} Active: *{isActive()}|"></p>
+
+    <label style="color: seagreen">Set activity:
         <select name="active" th:value="*{isActive()}">
             <option>true</option>
             <option>false</option>
         </select>
-    </label><br>
+    </label><br><br><br>
 
-    <h1>Set role:</h1>
-    <label>
+    <div style="text-align: justify-all;">
+    <label>Set role:
         <select name="roles" multiple>
-            <option th:each="role : ${roles}" th:value="${role.getName()}"><p th:text="${role.getName()}"></p></option>
+            <option th:each="role : ${roles}" th:value="${role.getName()}"><p th:text="${role.getName().replace('ROLE_', '').toLowerCase()}"></p></option>
         </select>
     </label><br>
-    <button type="submit">Change user data</button>
+    </div>
+    <button type="submit" style="color: white; background: chartreuse">Update user data</button>
 </form>
 
+<div id="ROLES">
+    Deprive user of role:
+    <table style="align-content: center; font-size: small; background-color: darkslategray; border: white">
+        <tr>
+            <th>Role name</th>
+            <th>Delete</th>
+        </tr>
+        <tr th:each="role :${user.getRoles()}">
+            <td><p th:text="${role.getName()}"/></td>
+            <td>
+                <div>
+                    <form th:action="@{/admin/users/{id}/delete_role/{role_id}(id=${user.id}, role_id=${role.getId()})}"
+                          method="post">
+                        <button type="submit">delete role</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
 
 <div th:object="${user}">
     <form th:action="@{/admin/users/{id}/delete_user(id=*{id})}" method="post">
-        <button type="submit">Delete this user</button>
+        <button type="submit" style="color: black; background: red">Delete this user</button>
     </form>
 </div>
 

@@ -1,6 +1,6 @@
-insert into users(id, username, password, active)
-values (1, 'username1', 'password1', true),
-       (2, 'username2', 'password2', false);
+insert into users(id, username, password, active, activation_code, email)
+values (1, 'username1', 'password1', false, 'activation-code-example', 'test1@mail.com'),
+       (2, 'username2', 'password2', true, null, 'test2@mail.com');
 SELECT SETVAL('users_id_seq', (select max(id) from users));
 
 insert into messages(id, text, tag, user_id)

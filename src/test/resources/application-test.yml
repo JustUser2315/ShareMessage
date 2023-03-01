@@ -6,3 +6,5 @@ spring:
     properties.hibernate:
      hbm2ddl.auto: create-drop
 #        create-drop
+  liquibase:
+    enabled: false

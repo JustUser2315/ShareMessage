@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/messages")
@@ -23,8 +24,9 @@ public class MessageController {
    private final MessageService messageService;
    private final UserService userService;
    private final RoleService roleService;
+
     @GetMapping
-    public String findAll(Model model, MessageFilter filter, Pageable pageable){
+    public String showAllWithFilter(Model model, MessageFilter filter, Pageable pageable){
         var role_admin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
         var allWithFilter = messageService.findAllWithFilter(filter, pageable);
         var user = userService.findByUsername(userService.usernameFromContext());
@@ -45,7 +47,22 @@ public class MessageController {
     }
     @PostMapping ("/{id}/delete_message")
     public String delete(@PathVariable Integer id){
+        String username = userService.usernameFromContext();
+        Long userId = userService.findByUsername(username).get().getId();
         messageService.delete(id);
-        return "redirect:/messages";
+        return "redirect:/user/%d/profile/messages".formatted(userId);
+    }
+    @PostMapping ("/{id}/update_message")
+    public String update(@PathVariable Integer id, @ModelAttribute MessageEditDto messageEditDto){
+        String username = userService.usernameFromContext();
+        Long userId = userService.findByUsername(username).get().getId();
+        messageService.update(id, messageEditDto);
+        return "redirect:/user/%d/profile/messages".formatted(userId);
+    }
+
+    @GetMapping("/{id}/picture")
+    @ResponseBody()
+    public byte[] messagePicture(@PathVariable Integer id) throws IOException, IOException {
+        return messageService.findPicture(id).get();
     }
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="reCaptcha_head">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</div>
+
+<div th:fragment="reCaptcha_body (buttonName)">
+
+    <div class="g-recaptcha" th:attr="data-sitekey = ${@recaptchaKeys.getSite()}"></div>
+    <br/>
+    <input type="submit" th:value="${buttonName}">
+
+    <div th:if="${reCaptchaErrors}">
+        Recaptcha:
+        <span th:each="code : ${reCaptchaErrors}" th:text="${code}"></span>
+    </div>
+</div>
+</html>

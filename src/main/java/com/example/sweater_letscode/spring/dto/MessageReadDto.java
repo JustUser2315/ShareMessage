@@ -14,4 +14,7 @@ public class MessageReadDto {
     private String text;
     private String tag;
     private String authorUsername;
+    private Long authorId;
+    private String picture;
+
 }

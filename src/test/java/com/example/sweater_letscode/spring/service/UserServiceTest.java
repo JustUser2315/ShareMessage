@@ -4,7 +4,7 @@ import com.example.sweater_letscode.spring.TestBaseApplication;
 import com.example.sweater_letscode.spring.dto.RoleEditDto;
 import com.example.sweater_letscode.spring.dto.RoleReadDto;
 import com.example.sweater_letscode.spring.dto.UserEditDto;
-import com.example.sweater_letscode.spring.dto.UserFullReadDto;
+import com.example.sweater_letscode.spring.dto.UserReadDto;
 import com.example.sweater_letscode.spring.repository.RoleRepository;
 import com.example.sweater_letscode.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestConstructor;
 
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +32,14 @@ class UserServiceTest extends TestBaseApplication {
     private final JdbcTemplate jdbcTemplate;
 
     @Test
+    void isAccountActivated(){
+        userService.doesUserHaveAnActivationCode("activation-code-example");
+        var expRes = userService.findById(1L).get();
+        assertThat(expRes).isNotNull();
+        assertEquals(expRes.getActivationCode(), null);
+        assertEquals(expRes.isActive(), true);
+    }
+    @Test
     void loadUserByUsername() {
         var expectedResult = userService.loadUserByUsername("username1");
         var resultUsername = expectedResult.getUsername();
@@ -36,44 +49,59 @@ class UserServiceTest extends TestBaseApplication {
     @Test
     void registration() {
         RoleEditDto red1 = new RoleEditDto("ROLE_USER");
-        RoleEditDto red2 = new RoleEditDto("ROLE_ADMIN");
-        UserEditDto userEditDto = new UserEditDto("username3", "password3",true, Set.of(red1, red2));
+        UserEditDto userEditDto = new UserEditDto("test3@mail.com","username3", "rawPassword", false, "activationCode3", null,Set.of(red1));
         var registration = userService.registration(userEditDto);
         var expectedUsers = userRepository.findAll();
-        org.assertj.core.api.Assertions.assertThat(expectedUsers).hasSize(3);
+        assertThat(expectedUsers).hasSize(3);
     }
 
     @Test
     void findById(){
         var expectedResult = userService.findById(1L);
+
         var role_user = RoleReadDto.builder().id(1).name("ROLE_USER").build();
         var role_admin = RoleReadDto.builder().id(2).name("ROLE_ADMIN").build();
         var roles = Set.of(role_user, role_admin);
 
         Assertions.assertTrue(expectedResult.isPresent());
-        Assertions.assertEquals(expectedResult.get().getId(), 1L);
-        Assertions.assertEquals(expectedResult.get().getUsername(), "username1");
-        Assertions.assertTrue(expectedResult.get().isActive());
-        Assertions.assertEquals(expectedResult.get().getRoles(), roles);
+        assertEquals(expectedResult.get().getId(), 1L);
+        assertEquals(expectedResult.get().getUsername(), "username1");
+        Assertions.assertFalse(expectedResult.get().isActive());
+        assertEquals(expectedResult.get().getRoles(), roles);
 
     }
     @Test
-    void update(){
+    void updateUsername(){
         RoleEditDto roleEditDto = new RoleEditDto("UNKNOWN");
-        UserEditDto userEditDto = new UserEditDto("username1-updated",null, true, Set.of(roleEditDto));
+        UserEditDto userEditDto = new UserEditDto(null,"username1-updated", null, true, "activationCode1", null,Set.of(roleEditDto));
 
         var updatedUser = userService.update(1L, userEditDto);
         var checkedUser = userService.findById(1L);
-        Assertions.assertEquals(updatedUser.get().getUsername(), checkedUser.get().getUsername());
-        Assertions.assertEquals(updatedUser.get().getId(), checkedUser.get().getId());
-        Assertions.assertEquals(updatedUser.get().getRoles(), checkedUser.get().getRoles());
+        assertEquals(updatedUser.get(), checkedUser.get());
+    }
+    @Test
+    void updateEmail(){
+        RoleEditDto roleEditDto = new RoleEditDto("UNKNOWN");
+        UserEditDto userEditDto = new UserEditDto("test1update@mail.com","username2", null, false, "some-code", null,Set.of(roleEditDto));
+
+        var beforeUpdate = userService.findById(2L).get();
+        userService.update(2L, userEditDto);
+        var afterUpdate = userService.findById(2L).get();
+        assertNotEquals(beforeUpdate.isActive(), afterUpdate.isActive());
+        assertNotEquals(beforeUpdate.getEmail(), afterUpdate.getEmail());
+        assertNotEquals(beforeUpdate.getActivationCode(), afterUpdate.getActivationCode());
+
+        assertEquals(beforeUpdate.getId(), afterUpdate.getId());
+        assertEquals(beforeUpdate.getUsername(), afterUpdate.getUsername());
+        System.out.println();
+
     }
     @Test
     void clearUserRoles(){
 
         var query = jdbcTemplate.query("select user_id from users_roles where user_id = 1 and role_id=1",
                 (rs, rowNum) -> rs.getObject("user_id"));
-        Assertions.assertEquals(1, query.size());
+        assertEquals(1, query.size());
         userService.clearUserRoles(1L, 1L);
         var query2 = jdbcTemplate.query("select user_id from users_roles where user_id = 1 and role_id=1",
                 (rs, rowNum) -> rs.getObject("user_id"));
@@ -89,11 +117,11 @@ class UserServiceTest extends TestBaseApplication {
     void findByUsername(){
         RoleReadDto readDto =  new RoleReadDto(1L, "ROLE_USER");
         RoleReadDto readDto2 =  new RoleReadDto(2L, "ROLE_ADMIN");
-        UserFullReadDto u = new UserFullReadDto(1L, "username1", true, Set.of(readDto2, readDto));
+        UserReadDto u = new UserReadDto(1L, "test1@mail.com", "username1", false, "activation-code-example",null,Set.of(readDto2, readDto));
 
         var expectedResult = userService.findByUsername("username1");
         Assertions.assertTrue(expectedResult.isPresent());
-        Assertions.assertEquals(u, expectedResult.get());
+        assertEquals(u, expectedResult.get());
     }
     @Test
     void updatePassword(){

@@ -30,10 +30,11 @@ class RegistrationControllerTest extends TestBaseApplication {
     @Test
     void registrationNewUserSuccessful() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/registration")
-                        .param("username", "test@m.com")
-                        .param("password", "password1"))
-                .andExpectAll(MockMvcResultMatchers.status().is3xxRedirection(),
-                        MockMvcResultMatchers.redirectedUrl("/login"));
+                        .param("username", "username1")
+                        .param("password", "password1")
+                        .param("email", "test3@mail.com"))
+                .andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful(),
+                        MockMvcResultMatchers.view().name("email"));
 
     }
     @Test

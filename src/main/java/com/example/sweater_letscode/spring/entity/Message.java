@@ -3,8 +3,6 @@ package com.example.sweater_letscode.spring.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -21,7 +19,9 @@ public class Message {
     private String text;
     private String tag;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
+    private String picture;
 }

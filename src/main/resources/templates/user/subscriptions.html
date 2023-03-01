@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscribers</title>
+</head>
+<body>
+    <div th:insert="~{fragments/header_fragment::BACK}"/>
+<div>
+  <form th:action="@{/user/{id}/profile/subscriptions(id=${user.getId()})}">
+      <div th:each="sub:${subscribtions}">
+          <a th:href="@{/user/{id}/profile/show(id=${sub.getId()})}">
+          <img th:src="@{/user/{id}/profile/avatar(id=${sub.getId()})}" alt="User avatar" width="25" height="25" onerror="this.style.display='none'"/>
+          </a>
+          <h3 th:text="${user.getUsername()}"></h3>
+      </div>
+  </form>
+</div>
+</body>
+</html>

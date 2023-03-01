@@ -4,6 +4,7 @@ import com.example.sweater_letscode.spring.TestBaseApplication;
 import com.example.sweater_letscode.spring.service.MessageService;
 import com.example.sweater_letscode.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestConstructor;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,5 +87,26 @@ class UserControllerTest extends TestBaseApplication {
                         model().attribute("user",userService.findById(1L).get()),
                         model().attribute("userMessages",messageService.findAllByAuthorId(1L))
                 );
+    }
+
+    @GetMapping("/activate/{code}")
+    public String activate(@PathVariable String code) {
+        var accountActivated = userService.doesUserHaveAnActivationCode(code);
+        if(accountActivated){
+            return "/login";
+        }
+        return "redirect:/registration";
+    }
+
+    @Test
+    void activate() throws Exception {
+//        var beforeLinkClick = userService.findById(1L).get();
+        mockMvc.perform(get("/user/activate/{code}", "activation-code-example"))
+                .andExpectAll(status().is3xxRedirection(), redirectedUrl("/login"));
+
+        var afterLinkClick = userService.findById(1L).get();
+        Assertions.assertTrue(afterLinkClick.isActive());
+        Assertions.assertNull(afterLinkClick.getActivationCode());
+
     }
 }

@@ -14,5 +14,13 @@ public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredi
     @Query(nativeQuery = true, value = "update users set password = :newPassword where id=:id")
     @Modifying
     void updatePassword(Long id, String newPassword);
-
+    Optional<User>findByActivationCode(String activationCode);
+    @Query(nativeQuery = true, value = "insert into user_subscriptions(channel_id, subscriber_id) values (:userId, :whoFollowId)")
+    @Modifying
+    void subscribe(Long userId, Long whoFollowId);
+    @Query(nativeQuery = true, value = "delete from user_subscriptions where channel_id=:userId and subscriber_id=:whoFollowId")
+    @Modifying
+    void unsubscribe(Long userId, Long whoFollowId);
+    @Query(nativeQuery = true, value = "select count(channel_id) from user_subscriptions where channel_id=:userId and subscriber_id=:whoFollowId")
+    Long isSub(Long userId, Long whoFollowId);
 }

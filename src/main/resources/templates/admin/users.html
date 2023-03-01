@@ -5,20 +5,22 @@
     <title>Admin</title>
 </head>
 <body>
+<div th:insert="~{fragments/header_fragment::logout}"></div>
 <form th:action="@{/admin/users}">
   Filter:
   <div>
     <label>Username:
-      <input type="text" name="username" th:value="${filter.getUsername()}">
+      <input type="text" name="username">
+    </label>
+    <label>Email:
+      <input type="text" name="email">
     </label>
     <label>Active:
-      <input type="text" name="active" th:value="true">
+      <input type="text" name="active">
     </label>
-<!--    <label>Roles:-->
-<!--      <input type="text" name="roles" th:value="${filter.getRoles()}">-->
-<!--    </label>-->
     <button type="submit">Filter</button>
   </div>
+
   Page:
   <div>
     <label>Page:
@@ -37,12 +39,14 @@
     <table>
       <tr>
         <th>Id</th>
+        <th>Email</th>
         <th>Username</th>
         <th>Is active</th>
         <th>Roles</th>
       </tr>
-      <tr th:each="user:${users.getContent()}" th:object="${user}">
+      <tr th:each="user:${users.getContent()}" th:object="${user}"  th:if="${user.getId()}!=${me.getId()}">
         <td><p th:text="*{getId()}" ></p></td>
+        <td><p th:text="*{getEmail()}" ></p></td>
         <td><p th:text="*{getUsername()}" ></p></td>
         <td><p th:text="*{isActive()}" ></p></td>
         <td>

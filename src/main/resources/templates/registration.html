@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_head}"/>
 <head>
     <meta charset="UTF-8">
     <title>Registration</title>
@@ -7,19 +8,22 @@
 <body>
 <h1>New user registration page</h1>
 
-<div>
-  <form th:action="@{/registration}" method="post">
-    <label>Username:
-      <input type="text" name="username">
+
+  <form id="register-form" th:action="@{/registration}" enctype="multipart/form-data" method="post">
+    <label>Email:
+      <input type="text" name="email">
     </label><br>
-    <label>Password:
-      <input type="password" name="password">
+   <th:block th:insert="~{fragments/username_and_password_fragment}"/>
+    <label>Avatar:
+      <input type="file" name="avatar">
     </label><br>
-    <div th:if="${errors}">
+    <div th:if="${errors!=null}">
       <p th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red">Error message</p>
     </div>
-    <button type="submit">Register</button>
+
+<th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_body (buttonName = 'Create Account')}"/>
+
   </form>
-</div>
+
 </body>
 </html>

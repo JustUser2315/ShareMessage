@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '19'
 
 configurations {
     compileOnly {
@@ -23,7 +23,7 @@ ext {
     set('testcontainersVersion', "1.17.6")
 }
 configurations {
-    querydsl.extendsFrom implementation, compileOnly, runtimeOnly, annotationProcessor, testAnnotationProcessor, testCompileOnly, testImplementation
+    querydsl.extendsFrom implementation, compileOnly, runtimeOnly, annotationProcessor, testAnnotationProcessor, testCompileOnly, testImplementation, compile
 }
 
 dependencies {
@@ -33,20 +33,31 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+//    implementation 'org.springframework.session:spring-session-jdbc:2.4.1'
+//    implementation 'com.google.apis:google-api-services-recaptchaenterprise:v1beta1-rev20210324-1.31.0'
 
 
     implementation 'org.liquibase:liquibase-core'
 
 
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.modelmapper:modelmapper:3.1.1'
-    implementation 'org.freemarker:freemarker:2.3.31'
 
-    implementation 'com.querydsl:querydsl-jpa'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+
+
+    implementation 'com.querydsl:querydsl-core:5.0.0'
     annotationProcessor 'com.querydsl:querydsl-apt'
+    implementation 'com.querydsl:querydsl-jpa'
+
 
 
 
@@ -59,15 +70,9 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
-querydsl {
-    jpa = true
-    library = 'com.querydsl:querydsl-apt:5.0.0'
-    querydslSourcesDir = "$buildDir/generated/sources/annotationProcessor/java/main"
-}
 
-compileQuerydsl{
-    options.annotationProcessorPath=configurations.querydsl
-}
+
+
 
 dependencyManagement {
     imports {
@@ -77,4 +82,22 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+querydsl {
+    jpa = true
+    library = "com.querydsl:querydsl-apt:5.0.0"
+    querydslSourcesDir = "$buildDir/generated/sources/annotationProcessor/java/main"
+}
+initQuerydslSourcesDir.dependsOn clean
+
+sourceSets {
+    main.java.srcDirs += "$buildDir/generated/sources/annotationProcessor/java/main"
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    querydsl.extendsFrom annotationProcessor, implementation, compilyOnly, runtimeOnly
 }

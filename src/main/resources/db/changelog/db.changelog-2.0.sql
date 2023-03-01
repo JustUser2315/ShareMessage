@@ -1,15 +1,9 @@
   --liquibase formatted sql
-
   --changeset yurii:1
-create table roles(
-    id bigserial primary key not null ,
-    name varchar(64) not null check ( name like 'ROLE_%')
-);
-insert into roles(name) values ('ROLE_USER'), ('ROLE_ADMIN');
+  create table user_subscriptions (
+    channel_id bigint references users(id) on delete cascade ,
+    subscriber_id bigint references users(id) on delete cascade ,
+     primary key (channel_id, subscriber_id)
+  );
 
-  --changeset yurii:2
-create table users_roles(
-    user_id bigserial references users(id) on delete cascade on update cascade ,
-    role_id bigserial references roles(id) on delete cascade on update cascade
-);
-
+insert into user_subscriptions values (2, 16);

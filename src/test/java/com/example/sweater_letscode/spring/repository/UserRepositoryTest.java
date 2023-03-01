@@ -9,13 +9,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.TestConstructor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @RequiredArgsConstructor
 @ExtendWith(MockitoExtension.class)
 class UserRepositoryTest extends TestBaseApplication {
 private final UserRepository userRepository;
+
+@Test
+void findByActivationCode(){
+    var expResult = userRepository.findByActivationCode("activation-code-example");
+    Assertions.assertTrue(expResult.isPresent());
+    Assertions.assertEquals(expResult.get(), userRepository.findById(1L).get());
+}
 
     @Test
     void findByUsername() {
@@ -24,7 +31,7 @@ private final UserRepository userRepository;
         expectedResult.ifPresent(user-> {
             assertEquals(1L, user.getId());
             assertEquals("password1", user.getPassword());
-            assertTrue(user.isActive());
+            assertFalse(user.isActive());
         });
     }
 

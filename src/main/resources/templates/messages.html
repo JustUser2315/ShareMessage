@@ -5,54 +5,73 @@
     <title>Messages</title>
 </head>
 <body>
-<div th:insert="~{my_profile_fragment}"></div>
-<div th:insert="~{logout_fragment}"></div>
-<form th:action="@{/messages}" th:method="POST">
-    <label>
+<th:block th:insert="~{fragments/header_fragment::logout}"/>
+<th:block th:insert="~{fragments/header_fragment::myProfile}"/>
+
+<div id="MESSAGE CREATING">
+<form th:action="@{/messages}" th:method="POST" enctype="multipart/form-data">
+    <h1>Create message</h1>
+    <div>
         <input type="text" name="text" placeholder="Text">
-    </label>
-    <label>
+    </div>
+    <div>
         <input type="text" name="tag" placeholder="Tag">
-    </label>
-    <button type="submit">Save</button>
+    </div>
+    <div>
+        <input type="file" name="picture">
+    </div>
+    <button type="submit">Create</button>
 <div th:if="${errors}">
     <p th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red">Error message</p>
 </div>
 </form>
+</div>
 
+<div id="ALL MESSAGES">
 <form th:action="@{/messages}">
     <H1>All Messages</H1>
-   <div>
+   <div id="FILTER">
        Filter:
-       <label>
-           <input type="text" name="text" placeholder="TextFilter" th:value="${filter.getText()}">
-       </label>
-       <label>
-           <input type="text" name="tag" placeholder="TagFilter" th:value="${filter.getTag()}">
-       </label>
+       <div>
+           <input type="text" name="text" placeholder="TextFilter">
+       </div>
+       <div>
+           <input type="text" name="tag" placeholder="TagFilter">
+       </div>
        <button type="submit">Filter</button>
    </div>
 
-   <div>
+   <div id="PAGE">
        Page:
-       <label>
+       <div>
            <input type="number" name="page" placeholder="Page" th:value="${messages.getMetadata().getNumberOfPage()}">
-       </label>
-       <label>
+       </div>
+       <div>
            <input type="number" name="size" placeholder="Size" th:value="${messages.getMetadata().getSize()}">
-       </label>
+       </div>
        <button type="submit">Page filter</button>
    </div>
 
+<div id="MESSAGES ON PAGE">
+    <div th:each="message : ${messages.getContent()}">
 
-    <div th:each="message : ${messages.getContent()}" th:text="|${message.getId()}. ${message.getText()} ('#'${message.getTag()}) ${message.getAuthorUsername()}|"></div>
+        <a th:if="${user.get().getId()==message.getAuthorId()}" th:href="@{user/{id}/profile/(id=${message.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${message.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
+        <a th:if="${user.get().getId()!=message.getAuthorId()}" th:href="@{user/{id}/profile/show(id=${message.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${message.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
 
-</form>
-<div>
-    <a th:href="@{/user/{id}/profile/messages(id=${user.get().id})}">See all my messages</a>
+        <img th:src="@{/messages/{id}/picture(id=${message.getId()})}" alt="Message picture" width="100" height="100" onerror="this.style.display='none'"/>
+
+
+
+        <p th:text="|${message.getAuthorUsername()}: ${message.getText()} #${message.getTag()}|"></p>
+    </div>
 </div>
-<div>
-    <a th:if="${user.get().getRoles().contains(role)}" th:href="@{/admin/users}">See list of users</a>
+</form>
+</div>
+<div id="MY MESSAGES LINK">
+    <a th:href="@{/user/{id}/profile/messages(id=${user.get().id})}" style="text-decoration: none">See all my messages</a>
+</div>
+<div id="ADMIN OPTIONS LINK">
+    <a th:if="${user.get().getRoles().contains(role)}" th:href="@{/admin/users}" style="text-decoration: none">See list of users</a>
 </div>
 
 </body>

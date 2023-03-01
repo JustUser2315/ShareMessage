@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_head}"/>
 <head>
     <meta charset="UTF-8">
+
     <title>Login</title>
 </head>
 <body>
 <h1 style="color: darkorange">Login Page</h1>
-<div>
-    <form action="/processing_login" method="post">
-        <label>Username:
-            <input type="text" name="username">
-        </label><br>
-        <label>Password:
-            <input type="password" name="password">
-        </label><br>
-        <button type="submit">Login</button>
+
+
+
+<div id="Login form">
+    <form th:action="@{/login}" method="post">
+       <th:block th:insert="~{fragments/username_and_password_fragment::username_and_password_form}"/>
+
+        <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_body (buttonName='Log In')}"/>
     </form>
 </div>
 <br>
-<div>
-    <a href="/registration">registration</a>
+
+<div id="Registration page link">
+    <span style="font-size: larger; color: darkorchid">Don't have account yet?</span>
+    <br>
+    <a th:href="@{/registration}" style="text-decoration: none">Sign Up</a>
 </div>
 </body>
 </html>

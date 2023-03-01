@@ -32,19 +32,21 @@ public class AdminController {
 //    }
     @GetMapping
     public String showAllUsersWithFilter(Model model, Pageable pageable, UserFilter filter) {
+        var me = userService.findByUsername(userService.usernameFromContext()).get();
         var pageResponse = PageResponse.createPageResponse(userService.showAllUsersWithFilter(filter, pageable));
         model.addAttribute("users", pageResponse);
         model.addAttribute("filter", filter);
+        model.addAttribute("me", me);
         return "admin/users";
     }
     @GetMapping("/{id}")
-    public String userInfo(@PathVariable Long id, Model model){
+    public String checkUserInfo(@PathVariable Long id, Model model){
         model.addAttribute("roles", roleService.findAll());
         model.addAttribute("user", userService.findById(id).get());
         return "admin/user";
     }
     @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute UserEditDto userEditDto){
+    public String editUserData(@PathVariable Long id, @ModelAttribute UserEditDto userEditDto){
         userService.update(id, userEditDto);
         return "redirect:/admin/users/" + id;
     }
@@ -54,7 +56,7 @@ public class AdminController {
         return "redirect:/admin/users/" + id;
     }
     @PostMapping("/{id}/delete_user")
-    public String deleteUser(@PathVariable Long id){
+    public String deleteUserById(@PathVariable Long id){
         userService.deleteUserById(id);
         return "redirect:/admin/users";
     }

@@ -4,32 +4,45 @@
     <meta charset="UTF-8">
     <title>My profile</title>
 </head>
+
 <body>
-<div th:insert="~{logout_fragment}"/>
+<div th:insert="~{fragments/header_fragment::logout}"/>
+<div th:insert="~{fragments/header_fragment::BACK}"/>
 <div>
-    <form th:action="@{/user/{id}/profile(id=${user.id})}" th:method="post" th:object="${user}">
-        <p th:text="|Id: *{getId()}|"></p>
-        <p th:text="|Username: *{getUsername()}|"></p>
-        <p th:text="|Acrive: *{isActive()}|"></p>
-        <label>Roles:
-            <p th:each="role :*{getRoles()}" th:text="|${role.getName()}|" name="roleName"
-               th:value="${role.getName()}"></p>
-        </label><br>
+    <form th:action="@{/user/{id}/profile(id=${user.id})}" th:method="post" enctype="multipart/form-data" th:object="${user}">
+
+        <th:block th:if="${user.getAvatar()!=null}">
+            <img th:src="@{/user/{id}/profile/avatar(id=*{getId()})}" alt="User avatar" width="80" height="80"/>
+        </th:block><br>
+        I follow:
+        <a th:href="@{/user/{id}/profile/subscriptions(id=${user.getId()})}"><span th:text="${user.getSubscriptions().stream().count()}"></span></a>
+        Me Follow:
+        <a th:href="@{/user/{id}/profile/subscribers(id=${user.getId()})}"><span th:text="${user.getSubscribers().stream().count()}"></span></a><br>
+
+
 
         <label>Username:
             <input type="text" name="username" th:value="${user.getUsername()}">
+        </label><br>
+
+        <label>Email:
+            <input type="text" name="email" th:value="${user.getEmail()}">
+        </label><br>
+
+        <label>Avatar:
+            <input type="file" name="avatar">
         </label><br>
         <button type="submit">Update my data</button>
     </form>
 </div>
 
 <div th:object="${user}">
-    <a th:href="@{/user/{id}/profile/update_password(id=*{id})}" style="">Change password</a>
+    <a th:href="@{/user/{id}/profile/update_password(id=*{id})}" style="text-decoration: none">Change password</a>
 </div>
 
 <div th:object="${user}">
     <form th:action="@{/user/{id}/profile/delete_account(id=*{id})}" th:method="post">
-        <button type="submit">Delete my account</button>
+        <button type="submit" style="color: black; background: red">Delete my account</button>
     </form>
 </div>
 

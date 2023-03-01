@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserFilter {
     private String username;
-    private boolean active;
+    private String email;
+    private String active;
     private Set<Role> roles;
 }

@@ -12,4 +12,5 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Quer
     Optional<Message>findByTag(String tag);
 
     List<Message> findAllByAuthorId(Long id);
+
 }

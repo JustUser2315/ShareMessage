@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div id="Logout" th:fragment="logout">
+    <form action="/logout" method="post">
+        <button type="submit" style="color: white; background: red">Logout</button>
+    </form>
+</div>
+
+<div id="My profile" th:fragment="myProfile">
+    <form th:action="@{user/{id}/profile(id=${user.get().id})}">
+        <button type="submit" style="color: white; background: green">My profile</button>
+    </form>
+</div>
+
+<div id="BACK button" th:fragment="BACK">
+    <a href="/messages" style="text-decoration: none; color: violet">Main Page</a>
+</div>
+</html>

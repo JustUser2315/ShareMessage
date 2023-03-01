@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My profile</title>
+</head>
+<body>
+<div th:insert="~{fragments/header_fragment::logout}"/>
+<div th:insert="~{fragments/header_fragment::BACK}"/>
+
+<div th:if="${isSub == false}">
+    <form th:action="@{/user/{id}/profile/subscribe(id=${user.getId()})}" method="post" enctype="multipart/form-data">
+        <button type="submit">Subscribe</button>
+    </form>
+</div>
+<div th:if="${isSub == true}">
+    <form th:action="@{/user/{id}/profile/unsubscribe(id=${user.getId()})}" method="post" enctype="multipart/form-data">
+        <button type="submit">Unsubscribe</button>
+    </form>
+</div>
+<div>
+    <form th:action="@{/user/{id}/profile/show(id=${user.id})}" th:method="post" enctype="multipart/form-data">
+        <th:block th:if="${user.getAvatar()!=null}">
+            <img th:src="@{/user/{id}/profile/avatar(id=${user.getId()})}" alt="User avatar" width="80" height="80"/>
+        </th:block>
+        <h1 th:text="${user.getUsername()}"></h1>
+        <div th:each="message:${messages}">
+            <span th:text="|${message.getText()}, #${message.getTag()}|"></span>
+            <img th:src="@{/messages/{id}/picture(id=${message.getId()})}" alt="Message picture" width="100" height="100" onerror="this.style.display='none'"/>
+        </div>
+    </form>
+</div>
+</body>
+</html>

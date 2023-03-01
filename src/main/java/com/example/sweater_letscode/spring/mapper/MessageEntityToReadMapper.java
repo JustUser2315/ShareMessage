@@ -13,6 +13,8 @@ public class MessageEntityToReadMapper implements MyCustomMapper<Message, Messag
                 .text(message.getText())
                 .tag(message.getTag())
                 .authorUsername(message.getAuthor().getUsername())
+                .authorId(message.getAuthor().getId())
+                .picture(message.getPicture())
                 .build();
     }
 }

@@ -5,13 +5,26 @@
     <title>My messages</title>
 </head>
 <body>
+<div th:insert="~{fragments/header_fragment::BACK}"/>
+
 <table>
     <tr>
-    <th>Message data</th>
-    <th>Delete</th>
+    <th>Image</th>
+    <th>Text, Tag, Picture</th>
+    <th>Edit, Delete</th>
     </tr>
     <tr th:each="message : ${userMessages}">
-        <td> <p th:text="|${message.getId()}. ${message.getText()} ('#'${message.getTag()})|"></p> </td>
+        <td><img th:src="@{/messages/{id}/picture(id=${message.getId()})}" alt="Message picture" width="100" height="100" onerror="this.style.display='none'"/></td>
+        <td>
+            <div>
+                <form th:action="@{/messages/{id}/update_message(id=${message.id})}" th:method="post" enctype="multipart/form-data">
+                    <input type="text" name="text" th:value="${message.getText()}">
+                    <input type="text" name="tag" th:value="${message.getTag()}">
+                    <input type="file" name="picture">
+                    <button type="submit">edit</button>
+                </form>
+            </div>
+        </td>
         <td>
             <div>
                 <form th:action="@{/messages/{id}/delete_message(id=${message.id})}" th:method="post">
@@ -19,8 +32,10 @@
                 </form>
             </div>
         </td>
+
     </tr>
 </table>
+
 
 
 

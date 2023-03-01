@@ -15,3 +15,10 @@ spring:
     user:
       name: admin
       password: admin
+    recaptcha:
+      site-key: 6LcRX6wkAAAAAHI55z77IRNepMwg42699X6dVk1H
+      secret-key: 6LcRX6wkAAAAAHJ4SYhpioTK9xetQHYa_OyRbAg6
+
+  devtools:
+    restart:
+      enabled: true
