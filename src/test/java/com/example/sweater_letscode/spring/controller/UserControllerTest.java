@@ -33,9 +33,9 @@ class UserControllerTest extends TestBaseApplication {
     void myProfile() throws Exception {
         mockMvc.perform(get("/user/1/profile"))
                 .andExpectAll(
-                        view().name("user/profile"),
+                        view().name("userICheck/profile"),
                         status().is2xxSuccessful(),
-                        model().attribute("user", userService.findById(1L).get())
+                        model().attribute("userICheck", userService.findById(1L).get())
                 );
     }
 
@@ -62,7 +62,7 @@ class UserControllerTest extends TestBaseApplication {
         mockMvc.perform(get("/user/{id}/profile/update_password", 1))
                 .andExpectAll(
                         status().is2xxSuccessful(),
-                        model().attribute("user", userService.findById(1L).get())
+                        model().attribute("userICheck", userService.findById(1L).get())
                 );
 
     }
@@ -83,8 +83,8 @@ class UserControllerTest extends TestBaseApplication {
         mockMvc.perform(get("/user/{id}/profile/messages", 1))
                 .andExpectAll(
                   status().is2xxSuccessful(),
-                  view().name("user/messages"),
-                        model().attribute("user",userService.findById(1L).get()),
+                  view().name("userICheck/messages"),
+                        model().attribute("userICheck",userService.findById(1L).get()),
                         model().attribute("userMessages",messageService.findAllByAuthorId(1L))
                 );
     }

@@ -31,22 +31,22 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
         }
 
 
-        // giving roles from UserEditDto and finding them in database by name. If find -> set this role to user. As we're using Set, it helps us to avoid collisions
+        // giving roles from UserEditDto and finding them in database by name. If find -> set this role to userICheck. As we're using Set, it helps us to avoid collisions
         var allRolesName = userEditDto.getRoles().stream().map(RoleEditDto::getName).toList();
         var allByNameIn = roleRepository.findAllByNameIn(allRolesName);
         for (Role r : allByNameIn) {
             user.getRoles().add(r);
         }
 
-        // if USerEditDto doesn't have a username, then we take an existing one from user
+        // if USerEditDto doesn't have a username, then we take an existing one from userICheck
         if (userEditDto.getUsername() == null) {
             userEditDto.setUsername(user.getUsername());
         }
-        // if USerEditDto doesn't have an email, then we take an existing one from user
+        // if USerEditDto doesn't have an email, then we take an existing one from userICheck
         if (userEditDto.getEmail() == null) {
             userEditDto.setEmail(user.getEmail());
         }
-        // in case, when we change email, we need to substitute user active status 'cause email was changed and user must confirm it by new activation code
+        // in case, when we change email, we need to substitute userICheck active status 'cause email was changed and userICheck must confirm it by new activation code
         if (!userEditDto.getEmail().equals(user.getEmail())) {
             user.setActive(false);
             user.setActivationCode(UUID.randomUUID().toString());
@@ -54,13 +54,15 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
         }
 
         // process of avatar changing
-        if (userEditDto.getAvatar() != null) {
-            try {
-                imageService.uploadAvatar(userEditDto.getAvatar().getOriginalFilename(), userEditDto.getAvatar().getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if(userEditDto.getAvatar()!=null) {
+            if (!userEditDto.getAvatar().isEmpty()) {
+                try {
+                    imageService.uploadAvatar(userEditDto.getAvatar().getOriginalFilename(), userEditDto.getAvatar().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                user.setAvatar(userEditDto.getAvatar().getOriginalFilename());
             }
-            user.setAvatar(userEditDto.getAvatar().getOriginalFilename());
         }
 
 
@@ -88,6 +90,8 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
                 .activationCode(user.getActivationCode())
                 .subscribers(user.getSubscribers())
                 .subscriptions(user.getSubscriptions())
+                .avatar(user.getAvatar())
+                .messages(user.getMessages())
                 .build();
 
 
@@ -104,7 +108,7 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
 //            userEditDto.setSubscriptions(Collections.emptySet());
 //        }
         /*
-         * initial user are created with UserEditDtoData(username, password, email)
+         * initial userICheck are created with UserEditDtoData(username, password, email)
          * without roles, avatar, and with random generated activation code */
         var user = User.builder()
                 .username(userEditDto.getUsername())
@@ -115,7 +119,7 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
                 .subscribers(Collections.emptySet())
                 .build();
 
-        // assign role for user. If role doesn't exist, we just add it to DB
+        // assign role for userICheck. If role doesn't exist, we just add it to DB
         var role_user = roleRepository.findRoleByName("ROLE_USER");
         if (role_user.isPresent()) {
             user.setRoles(Set.of(role_user.get()));
@@ -124,19 +128,24 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
             user.setRoles(Set.of(roleRepository.findRoleByName("ROLE_USER").get()));
         }
 
-        // check UserEditDto avatar existing. And if it does, we set name of file to user
-        if (!userEditDto.getAvatar().isEmpty()) {
-            try {
-                imageService.uploadAvatar(userEditDto.getAvatar().getOriginalFilename(), userEditDto.getAvatar().getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        if(userEditDto.getAvatar()!=null){
+            if (!userEditDto.getAvatar().isEmpty()) {
+                try {
+                    imageService.uploadAvatar(userEditDto.getAvatar().getOriginalFilename(), userEditDto.getAvatar().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                user.setAvatar(userEditDto.getAvatar().getOriginalFilename());
+            }else {
+                user.setAvatar("default_avatar.png");
             }
-            user.setAvatar(userEditDto.getAvatar().getOriginalFilename());
         }else {
             user.setAvatar("default_avatar.png");
         }
 
-        // assign activation code for user through UserEditDto 'cause we use this class for sending email for account activation confirming
+
+
+        // assign activation code for userICheck through UserEditDto 'cause we use this class for sending email for account activation confirming
         userEditDto.setActivationCode(UUID.randomUUID().toString());
         user.setActivationCode(userEditDto.getActivationCode());
 

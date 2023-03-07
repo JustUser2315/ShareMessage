@@ -17,6 +17,7 @@ public class UserReadDto {
     private boolean active;
     private String activationCode;
     private String avatar;
+    private Set<MessageReadDto> messages;
     private Set<RoleReadDto> roles;
     private Set<UserReadDto> subscriptions;
     private Set<UserReadDto> subscribers;

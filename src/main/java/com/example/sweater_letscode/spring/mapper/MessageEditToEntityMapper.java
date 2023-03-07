@@ -16,7 +16,7 @@ public class MessageEditToEntityMapper implements MyCustomMapper<MessageEditDto,
     private final ImageService imageService;
     @Override
     public Message map(MessageEditDto messageEditDto) {
-        // take a user from security context. If it doesn't exist, we assign "unknown" user.
+        // take a userICheck from security context. If it doesn't exist, we assign "unknown" userICheck.
         User user = User.builder()
                 .username("unknown").build();
         //TODO: we can delete checking 'cause SecurityFilterChain shouldn't give access to message creating for users without name...
@@ -31,13 +31,17 @@ public class MessageEditToEntityMapper implements MyCustomMapper<MessageEditDto,
                 .tag(messageEditDto.getTag())
                 .author(user)
                 .build();
-        if(!messageEditDto.getPicture().isEmpty()){
-            try {
-                imageService.uploadMessagePicture(messageEditDto.getPicture().getOriginalFilename(), messageEditDto.getPicture().getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+
+        if(messageEditDto.getPicture()!=null){
+            if(!messageEditDto.getPicture().isEmpty()){
+                try {
+                    imageService.uploadMessagePicture(messageEditDto.getPicture().getOriginalFilename(), messageEditDto.getPicture().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                message.setPicture(messageEditDto.getPicture().getOriginalFilename());
             }
-            message.setPicture(messageEditDto.getPicture().getOriginalFilename());
         }
 
         return message;
@@ -50,14 +54,18 @@ public class MessageEditToEntityMapper implements MyCustomMapper<MessageEditDto,
         if(messageEditDto.getTag()!=null){
             message.setTag(messageEditDto.getTag());
         }
-        if(!messageEditDto.getPicture().isEmpty()){
-            try {
-                imageService.uploadMessagePicture(messageEditDto.getPicture().getOriginalFilename(), messageEditDto.getPicture().getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if(messageEditDto.getPicture()!=null){
+            if(!messageEditDto.getPicture().isEmpty()){
+                try {
+                    imageService.uploadMessagePicture(messageEditDto.getPicture().getOriginalFilename(), messageEditDto.getPicture().getInputStream());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-            message.setPicture(messageEditDto.getPicture().getOriginalFilename());
+                message.setPicture(messageEditDto.getPicture().getOriginalFilename());
+            }
+        }else {
+            message.setPicture(message.getPicture());
         }
 
 

@@ -39,11 +39,11 @@ class AdminControllerTest extends TestBaseApplication {
     @Test
     void userInfo() throws Exception {
         mockMvc.perform(get("/admin/users/1"))
-                .andExpectAll(model().attributeExists("roles", "user"),
-                        view().name("admin/user"),
+                .andExpectAll(model().attributeExists("roles", "userICheck"),
+                        view().name("admin/userICheck"),
                         status().is2xxSuccessful(),
                         model().attribute("roles", roleService.findAll()),
-                        model().attribute("user", userService.findById(1L).get()));
+                        model().attribute("userICheck", userService.findById(1L).get()));
     }
 
     @Test

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="fragments/reCaptcha_fragment::reCaptcha_head"/>
+<head>
+    <th:block th:insert="~{fragments/bootstrap/bootstrap::bootstrap_hat}"/>
+    <meta charset="UTF-8">
+    <title>Delete Account</title>
+    <style>
+        .position-relative {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            /*align-items: center;*/
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<th:block th:insert="fragments/bootstrap/bootstrap::bootstrap_body"/>
+<h1>Do you want to delete your account? (Yes/No)</h1>
+<form th:action="@{/user/{id}/profile/delete_account(id=${user.getId()})}" th:method="post">
+    <div class="position-relative">
+        <div class="position-absolute top-50 start-50">
+            <div class="input-group input-group-sm mb-3; h-25 d-inline-block; w-100 p-3" style="width: 120px;">
+                <label for="confirm" class="input-group-text; fs-6" id="inputGroup-sizing-sm">Confirm: </label>
+                <input id="confirm" class="input-group-text; fs-6; form-control" type="text" name="confirm" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            </div>
+            <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_body (buttonName='Delete Account')}"/>
+        </div>
+
+    </div>
+
+</form>
+</body>
+</html>

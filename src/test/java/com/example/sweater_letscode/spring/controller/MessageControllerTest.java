@@ -36,7 +36,7 @@ class MessageControllerTest extends TestBaseApplication {
         mockMvc.perform(get("/messages"))
                 .andExpectAll(model().attribute("filter", messageFilter),
                         model().attribute("role", role_admin),
-                        model().attribute("user", user),
+                        model().attribute("userICheck", user),
                         status().is2xxSuccessful(),
                         view().name("messages"));
     }

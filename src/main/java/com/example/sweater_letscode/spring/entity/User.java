@@ -31,7 +31,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @Builder.Default
-    List<Message> messages = new ArrayList<>();
+    Set<Message> messages = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

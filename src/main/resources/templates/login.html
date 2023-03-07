@@ -2,19 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_head}"/>
 <head>
+    <th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_hat}"></th:block>
     <meta charset="UTF-8">
-
     <title>Login</title>
+
 </head>
 <body>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_body}"></th:block>
 <h1 style="color: darkorange">Login Page</h1>
 
 
 
 <div id="Login form">
     <form th:action="@{/login}" method="post">
-       <th:block th:insert="~{fragments/username_and_password_fragment::username_and_password_form}"/>
-
+    <div class="input-group mb-3; w-25">
+        <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
+        <input  name="username"  type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3; w-25">
+        <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
+        <input  name="password"  type="password" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+    </div>
         <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_body (buttonName='Log In')}"/>
     </form>
 </div>
@@ -23,7 +31,8 @@
 <div id="Registration page link">
     <span style="font-size: larger; color: darkorchid">Don't have account yet?</span>
     <br>
-    <a th:href="@{/registration}" style="text-decoration: none">Sign Up</a>
+    <a th:href="@{/registration}" style="text-decoration: none" class="link-info">Sign Up</a>
 </div>
+
 </body>
 </html>

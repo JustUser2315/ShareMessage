@@ -1,43 +1,75 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <th:block th:insert="~{fragments/bootstrap/bootstrap::bootstrap_hat}"/>
     <meta charset="UTF-8">
     <title>My messages</title>
 </head>
 <body>
-<div th:insert="~{fragments/header_fragment::BACK}"/>
-
-<table>
-    <tr>
-    <th>Image</th>
-    <th>Text, Tag, Picture</th>
-    <th>Edit, Delete</th>
-    </tr>
-    <tr th:each="message : ${userMessages}">
-        <td><img th:src="@{/messages/{id}/picture(id=${message.getId()})}" alt="Message picture" width="100" height="100" onerror="this.style.display='none'"/></td>
-        <td>
-            <div>
-                <form th:action="@{/messages/{id}/update_message(id=${message.id})}" th:method="post" enctype="multipart/form-data">
-                    <input type="text" name="text" th:value="${message.getText()}">
-                    <input type="text" name="tag" th:value="${message.getTag()}">
-                    <input type="file" name="picture">
-                    <button type="submit">edit</button>
+<th:block th:insert="~{fragments/bootstrap/bootstrap::bootstrap_body}"/>
+<nav class="navbar navbar-expand-lg bg-body-tertiary; navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/main">
+            <img th:src="@{/main/logo}" alt="Logo" width="30" height="24" class="d-inline-block align-top"/>
+            ShareMessage
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" th:href="@{/userICheck/{id}/profile(id=${user.getId()})}">My profile</a>
+                                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/messages}">Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/messages/create">Create message</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/main">Main page</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <th:block th:if="${user.getRoles().contains(role)}">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                admin
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" th:href="@{/admin/users}">See list of users</a></li>
+            </ul>
+        </div>
+    </th:block>
+    <div>
+        <th:block th:if="${user}!=null">
+            <a class="navbar-brand" href="/logout">Logout</a>
+        </th:block>
+        <th:block th:if="${user}==null">
+            <a class="navbar-brand" href="/login">Login</a>
+        </th:block>
+    </div>
+</nav>
+<th:block >
+    <div class="card-columns">
+        <div class="card text-white bg-dark mb-3 card border-info" style="max-width: 18rem;" th:each="m:${messages}">
+            <img class="card-img-top" th:src="@{/messages/{id}/picture(id=${m.getId()})}" alt="Card image cap" onerror="this.style.display='none'">
+            <div class="card-body">
+                <p class="card-text" th:text="${m.getText()}">message text</p>
+                <h6 style="color: pink" class="card-subtitle mb-2 text" th:text="${m.getTag()}">message tag</h6>
+                <form th:action="@{/messages/{id}/delete_message(id=${m.getId()})}" method="post">
+                    <button type="submit" class="btn btn-outline-light btn-sm">delete</button>
+                </form>
+                <form th:action="@{/messages/{id}/update_message(id=${m.getId()})}">
+                    <button type="submit" class="btn btn-outline-light btn-sm">edit</button>
                 </form>
             </div>
-        </td>
-        <td>
-            <div>
-                <form th:action="@{/messages/{id}/delete_message(id=${message.id})}" th:method="post">
-                    <button type="submit">delete</button>
-                </form>
-            </div>
-        </td>
-
-    </tr>
-</table>
-
-
-
+        </div>
+    </div>
+</th:block>
 
 
 </body>

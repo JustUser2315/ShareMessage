@@ -2,28 +2,41 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_head}"/>
 <head>
+    <th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_hat}"></th:block>
     <meta charset="UTF-8">
     <title>Registration</title>
 </head>
 <body>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_body}"></th:block>
 <h1>New user registration page</h1>
 
-
   <form id="register-form" th:action="@{/registration}" enctype="multipart/form-data" method="post">
-    <label>Email:
-      <input type="text" name="email">
-    </label><br>
-   <th:block th:insert="~{fragments/username_and_password_fragment}"/>
-    <label>Avatar:
-      <input type="file" name="avatar">
-    </label><br>
-    <div th:if="${errors!=null}">
-      <p th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red">Error message</p>
-    </div>
+      <div class="input-group mb-3; w-25">
+          <span class="input-group-text" id="inputGroup-sizing-default">Email</span>
+          <input  name="email"  type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+      <div class="input-group mb-3; w-25">
+          <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
+          <input  name="username"  type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+      <div class="input-group mb-3; w-25">
+          <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
+          <input  name="password"  type="password" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+      <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01">Avatar</label>
+          <input name="avatar" type="file" class="form-control" id="inputGroupFile01">
+      </div>
 
 <th:block th:insert="~{fragments/reCaptcha_fragment::reCaptcha_body (buttonName = 'Create Account')}"/>
-
   </form>
 
+
+<div th:if="${errors}" th:each="e:${errors}">
+    <span style="color: red" th:text="${e.defaultMessage}"></span>
+</div>
+<div th:if="${reCaptchaErrors}">
+    <span style="color: red" th:text="'reCaptcha Error'"></span>
+</div>
 </body>
 </html>

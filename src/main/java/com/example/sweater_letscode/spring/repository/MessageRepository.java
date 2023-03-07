@@ -2,6 +2,7 @@ package com.example.sweater_letscode.spring.repository;
 
 import com.example.sweater_letscode.spring.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +13,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Quer
     Optional<Message>findByTag(String tag);
 
     List<Message> findAllByAuthorId(Long id);
-
+    @Query(nativeQuery = true, value = "select * from messages order by id desc limit 10")
+    List<Message> findTop10();
 }

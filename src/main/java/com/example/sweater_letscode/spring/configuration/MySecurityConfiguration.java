@@ -26,10 +26,10 @@ public class MySecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(auth-> auth
-                        .antMatchers("/", "/registration", "/login", "/registration", "/user/activate/*").permitAll()
+                        .antMatchers("/", "/registration", "/login", "/registration", "/user/activate/*", "/main", "/user/*/profile/avatar", "/messages/*/picture", "/main/logo").permitAll()
                         .antMatchers("/messages").hasAnyRole("USER", "ADMIN")
                         .antMatchers("/admin/**").hasRole("ADMIN")
-                        .antMatchers("/user/**", "/user/*/profile/avatar", "/messages/*/picture").hasAnyRole("USER", "ADMIN")
+                        .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(login->login
                         .loginPage("/login")
@@ -38,7 +38,7 @@ public class MySecurityConfiguration {
                         .defaultSuccessUrl("/messages")
                         .permitAll())
                 .logout(logout->logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/login"))
+                        .logoutSuccessUrl("/main"))
                 .addFilterBefore(new RecaptchaFilter(authenticationFailureHandler), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
                 .accessDeniedPage("/403");;

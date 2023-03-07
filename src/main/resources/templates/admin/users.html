@@ -1,61 +1,132 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <th:block th:insert="/fragments/bootstrap/bootstrap::bootstrap_hat"/>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <style>
+        .listy li{
+            width: 25px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div th:insert="~{fragments/header_fragment::logout}"></div>
-<form th:action="@{/admin/users}">
-  Filter:
-  <div>
-    <label>Username:
-      <input type="text" name="username">
-    </label>
-    <label>Email:
-      <input type="text" name="email">
-    </label>
-    <label>Active:
-      <input type="text" name="active">
-    </label>
-    <button type="submit">Filter</button>
-  </div>
 
-  Page:
-  <div>
-    <label>Page:
-      <input type="number" name="page" th:value="${users.getMetadata().getNumberOfPage()}">
-    </label>
-    <label>Size:
-      <input type="number" name="size" th:value="${users.getMetadata().getSize()}">
-    </label>
-    <button type="submit">Page</button>
-  </div>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_body}"/>
+<nav class="navbar navbar-expand-lg bg-body-tertiary; navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/main">
+            <img th:src="@{/main/logo}" alt="Logo" width="30" height="24" class="d-inline-block align-top"/>
+            ShareMessage
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/user/{id}/profile(id=${user.getId()})}">My
+                        profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       th:href="@{/user/{id}/profile/messages(id=${user.getId()})}">My messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/messages}">Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/messages/create">Create message</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/main">Main page</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <th:block th:if="${user}!=null">
+            <a class="navbar-brand" href="/logout">Logout</a>
+        </th:block>
+        <th:block th:if="${user}==null">
+            <a class="navbar-brand" href="/login">Login</a>
+        </th:block>
+    </div>
+</nav>
+
+
+<form th:action="@{/admin/users}">
+    Filter:
+    <div>
+        <label>Username:
+            <input type="text" name="username">
+        </label>
+        <label>Email:
+            <input type="text" name="email">
+        </label>
+        <label>Active:
+            <input type="text" name="active">
+        </label>
+        <button type="submit">Filter</button>
+    </div>
+
+    Page:
+    <div>
+        <label>Page:
+            <input type="number" name="page" th:value="${users.getMetadata().getNumberOfPage()}">
+        </label>
+        <label>Size:
+            <input type="number" name="size" th:value="${users.getMetadata().getSize()}">
+        </label>
+        <button type="submit">Page</button>
+    </div>
 </form>
 
 <h1 style="color: darkorange">List of users:</h1>
 <div>
-  <form th:action="@{/admin/users}" method="post">
-    <table>
-      <tr>
-        <th>Id</th>
-        <th>Email</th>
-        <th>Username</th>
-        <th>Is active</th>
-        <th>Roles</th>
-      </tr>
-      <tr th:each="user:${users.getContent()}" th:object="${user}"  th:if="${user.getId()}!=${me.getId()}">
-        <td><p th:text="*{getId()}" ></p></td>
-        <td><p th:text="*{getEmail()}" ></p></td>
-        <td><p th:text="*{getUsername()}" ></p></td>
-        <td><p th:text="*{isActive()}" ></p></td>
-        <td>
-            <p th:each="role: *{getRoles()}" th:text="${role.getName().replace('ROLE_', '').toLowerCase()}"></p>
-        </td>
-        <td><a th:href="@{/admin/users/{id}(id = *{getId()})}">data</a></td>
-      </tr>
-    </table>
-  </form>
+    <form th:action="@{/admin/users}" method="post">
+        <!--    <table>-->
+        <!--      <tr>-->
+        <!--        <th>Id</th>-->
+        <!--        <th>Email</th>-->
+        <!--        <th>Username</th>-->
+        <!--        <th>Is active</th>-->
+        <!--        <th>Roles</th>-->
+        <!--      </tr>-->
+        <!--      <tr th:each="u:${users.getContent()}" th:object="${userICheck}"  th:if="${userICheck.getId()}!=${u}">-->
+        <!--        <td><p th:text="*{getId()}" ></p></td>-->
+        <!--        <td><p th:text="*{getEmail()}" ></p></td>-->
+        <!--        <td><p th:text="*{getUsername()}" ></p></td>-->
+        <!--        <td><p th:text="*{isActive()}" ></p></td>-->
+        <!--        <td>-->
+        <!--            <p th:each="role: *{getRoles()}" th:text="${role.getName().replace('ROLE_', '').toLowerCase()}"></p>-->
+        <!--        </td>-->
+        <!--        <td><a th:href="@{/admin/users/{id}(id = *{getId()})}">data</a></td>-->
+        <!--      </tr>-->
+        <!--    </table>-->
+
+        <div class="listy">
+            <ul class="list-group list-group-horizontal-sm list-group-item-info">
+                <li class="list-group-item flex-fill">Id</li>
+                <li class="list-group-item flex-fill">Username</li>
+                <li class="list-group-item flex-fill">Email</li>
+                <li class="list-group-item flex-fill">Account is activated</li>
+                <li class="list-group-item flex-fill">Role</li>
+                <li class="list-group-item flex-fill">Action</li>
+            </ul>
+            <ul class="list-group list-group-horizontal-sm" th:if="${u.getId()!=user.getId()}" th:each="u:${users.getContent()}">
+                <li class="list-group-item flex-fill"><a th:text="${u.getId()}"/></li>
+                <li class="list-group-item flex-fill"><a th:text="${u.getUsername()}"/></li>
+                <li class="list-group-item flex-fill"><a th:text="${u.getEmail()}"/></li>
+                <li class="list-group-item flex-fill"><a th:text="${u.isActive()}"/></li>
+                <li class="list-group-item flex-fill" th:each="r:${u.getRoles()}"><a
+                        th:text="${r.getName().replace('ROLE_', '')}"/></li>
+                <li class="list-group-item flex-fill"><a th:href="@{/admin/users/{id}(id = ${u.getId()})}">data</a></li>
+            </ul>
+        </div>
+    </form>
 </div>
 </body>
 </html>

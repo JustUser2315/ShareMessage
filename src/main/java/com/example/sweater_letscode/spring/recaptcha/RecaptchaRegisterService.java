@@ -28,9 +28,6 @@ public class RecaptchaRegisterService implements RecaptchaService{
         log.info(">>>>>>>>>>>>>>>>>> response after verifying: {}", recaptchaResponse);
 
 
-
-
-
         return recaptchaResponse;
     }
 }

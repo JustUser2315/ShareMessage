@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/bootstrap/bootstrap::bootstrap_hat}"/>
+    <meta charset="UTF-8">
+    <title>Update Message</title>
+    <style>
+        .position-relative {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            /*align-items: center;*/
+            text-align: center;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<th:block th:insert="fragments/bootstrap/bootstrap::bootstrap_body"/>
+<h1>Update message</h1>
+<div class="position-relative">
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <form th:action="@{/messages/{id}/update_message(id=${message.getId()})}" th:method="post" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Text</span>
+                <input th:value="${message.getText()}" name="text"  type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Tag</span>
+                <input th:value="${message.getTag()}" name="tag" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupFile01">Picture</label>
+                <input name="picture" type="file" class="form-control" id="inputGroupFile01">
+            </div>
+            <button class="btn btn-warning" type="submit">Edit</button>
+        </form>
+    </div>
+    <div th:if="${errors}" th:each="e:${errors}">
+        <span style="color: red" th:text="${e.defaultMessage}"></span>
+    </div>
+</div>
+
+
+
+</body>
+</html>

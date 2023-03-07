@@ -50,4 +50,10 @@ public class ImageService {
                 ? Optional.of(Files.readAllBytes(fullPath))
                 : Optional.empty();
     }
+    public Optional<byte[]> loadLogo(String fileName) throws IOException {
+        var fullPath = Paths.get("src\\main\\resources\\images\\logo\\", fileName);
+        return Files.exists(fullPath)
+                ? Optional.of(Files.readAllBytes(fullPath))
+                : Optional.empty();
+    }
 }

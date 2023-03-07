@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <th:block th:insert="/fragments/bootstrap/bootstrap::bootstrap_hat"/>
     <meta charset="UTF-8">
     <title>Messages</title>
 </head>
 <body>
-<th:block th:insert="~{fragments/header_fragment::logout}"/>
-<th:block th:insert="~{fragments/header_fragment::myProfile}"/>
-
-<div id="MESSAGE CREATING">
-<form th:action="@{/messages}" th:method="POST" enctype="multipart/form-data">
-    <h1>Create message</h1>
-    <div>
-        <input type="text" name="text" placeholder="Text">
-    </div>
-    <div>
-        <input type="text" name="tag" placeholder="Tag">
-    </div>
-    <div>
-        <input type="file" name="picture">
-    </div>
-    <button type="submit">Create</button>
-<div th:if="${errors}">
-    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red">Error message</p>
-</div>
-</form>
-</div>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_body}"/>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::NavBarForLoggedUser}"/>
 
 <div id="ALL MESSAGES">
 <form th:action="@{/messages}">
@@ -53,26 +35,22 @@
    </div>
 
 <div id="MESSAGES ON PAGE">
-    <div th:each="message : ${messages.getContent()}">
-
-        <a th:if="${user.get().getId()==message.getAuthorId()}" th:href="@{user/{id}/profile/(id=${message.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${message.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
-        <a th:if="${user.get().getId()!=message.getAuthorId()}" th:href="@{user/{id}/profile/show(id=${message.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${message.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
-
-        <img th:src="@{/messages/{id}/picture(id=${message.getId()})}" alt="Message picture" width="100" height="100" onerror="this.style.display='none'"/>
-
-
-
-        <p th:text="|${message.getAuthorUsername()}: ${message.getText()} #${message.getTag()}|"></p>
-    </div>
+    <th:block >
+        <div class="card-columns" >
+            <div class="card text-white bg-dark mb-3 card border-info" style="max-width: 18rem;" th:each="m:${messages.getContent()}">
+                <a th:if="${user.getId()==m.getAuthorId()}" th:href="@{user/{id}/profile/(id=${m.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${m.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
+                <a th:if="${user.getId()!=m.getAuthorId()}" th:href="@{user/{id}/profile/show(id=${m.getAuthorId()})}"><img th:src="@{/user/{id}/profile/avatar(id=${m.getAuthorId()})}" alt="User avatar" width="50" height="50" onerror="this.style.display='none'"/></a>
+                <h5 style="color: darkgreen" class="card-title" th:text="${m.getAuthorUsername()}">Card title</h5>
+                <img class="card-img-top" th:src="@{/messages/{id}/picture(id=${m.getId()})}" alt="Card image cap" onerror="this.style.display='none'">
+                <div class="card-body">
+                    <p class="card-text" th:text="${m.getText()}">message text</p>
+                    <h6 style="color: pink"  class="card-subtitle mb-2 text" th:text="${m.getTag()}">message tag</h6>
+                </div>
+            </div>
+        </div>
+    </th:block>
 </div>
 </form>
 </div>
-<div id="MY MESSAGES LINK">
-    <a th:href="@{/user/{id}/profile/messages(id=${user.get().id})}" style="text-decoration: none">See all my messages</a>
-</div>
-<div id="ADMIN OPTIONS LINK">
-    <a th:if="${user.get().getRoles().contains(role)}" th:href="@{/admin/users}" style="text-decoration: none">See list of users</a>
-</div>
-
 </body>
 </html>

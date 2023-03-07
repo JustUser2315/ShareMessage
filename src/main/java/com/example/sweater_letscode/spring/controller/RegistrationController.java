@@ -36,21 +36,20 @@ public class RegistrationController {
     }
     @PostMapping
     public String registration(@ModelAttribute @Valid UserEditDto userEditDto, BindingResult bindingResult, RedirectAttributes redirectAttributes,
-                               @RequestParam(name = "g-recaptcha-response") String reCaptchaResponse, Model model){
+                               @RequestParam(name = "g-recaptcha-response") String reCaptchaResponse){
 
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> g-recaptcha-response: {}", reCaptchaResponse);
 
-        // verify Recaptcha response
+//        // verify Recaptcha response
         RecaptchaResponse verify = recaptchaRegisterService.verify(reCaptchaResponse);
-        if(!verify.isSuccess()){
+//        if(!verify.isSuccess()){
+//            return "redirect:/registration";
+//        }
+        if(bindingResult.hasErrors() || !verify.isSuccess() || (bindingResult.hasErrors() && !verify.isSuccess())){
             redirectAttributes.addFlashAttribute("reCaptchaErrors", verify.getAllErrors());
-            return "redirect:/registration";
-        }
-
-        if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            redirectAttributes.addFlashAttribute("userEditDto", userEditDto);
+            redirectAttributes.addFlashAttribute("user", userEditDto);
             return "redirect:/registration";
         }
 

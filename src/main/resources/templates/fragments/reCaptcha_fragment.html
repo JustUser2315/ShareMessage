@@ -8,11 +8,7 @@
 
     <div class="g-recaptcha" th:attr="data-sitekey = ${@recaptchaKeys.getSite()}"></div>
     <br/>
-    <input type="submit" th:value="${buttonName}">
+    <input type="submit" th:value="${buttonName}" class="btn btn-success">
 
-    <div th:if="${reCaptchaErrors}">
-        Recaptcha:
-        <span th:each="code : ${reCaptchaErrors}" th:text="${code}"></span>
-    </div>
 </div>
 </html>

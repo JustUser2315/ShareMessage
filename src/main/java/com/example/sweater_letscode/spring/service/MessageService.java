@@ -40,6 +40,12 @@ public class MessageService {
         return messageRepository.findAll(pageable)
                 .map(messageEntityToReadMapper::map);
     }
+
+    public List<MessageReadDto> showLastTen(){
+       return messageRepository.findTop10()
+                .stream().map(messageEntityToReadMapper::map)
+                .toList();
+    }
    @Transactional
     public MessageReadDto save(MessageEditDto messageEditDto){
        var savedMessage = messageRepository.save(messageEditToEntityMapper.map(messageEditDto));
@@ -73,5 +79,10 @@ public class MessageService {
                 .map(messageRepository::saveAndFlush)
                 .map(messageEntityToReadMapper::map);
 
+    }
+
+    public Optional<MessageReadDto> findById(Integer id) {
+        return messageRepository.findById(id)
+                .map(messageEntityToReadMapper::map);
     }
 }
