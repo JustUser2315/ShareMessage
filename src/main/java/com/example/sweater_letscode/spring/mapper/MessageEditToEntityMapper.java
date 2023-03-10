@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class MessageEditToEntityMapper implements MyCustomMapper<MessageEditDto,
                 .text(messageEditDto.getText())
                 .tag(messageEditDto.getTag())
                 .author(user)
+                .likes(Collections.emptySet())
                 .build();
 
         if(messageEditDto.getPicture()!=null){
@@ -75,6 +77,7 @@ public class MessageEditToEntityMapper implements MyCustomMapper<MessageEditDto,
                 .tag(message.getTag())
                 .author(message.getAuthor())
                 .picture(message.getPicture())
+                .likes(message.getLikes())
                 .build();
         return updatedMessage;
     }

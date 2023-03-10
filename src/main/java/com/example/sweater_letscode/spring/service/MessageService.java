@@ -85,4 +85,8 @@ public class MessageService {
         return messageRepository.findById(id)
                 .map(messageEntityToReadMapper::map);
     }
+
+    public boolean isLiked(Long userId, Integer messageId){
+        return messageRepository.isLiked(userId, messageId)>0;
+    }
 }

@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestConstructor;
 
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
@@ -27,9 +29,9 @@ class MessageServiceTest extends TestBaseApplication {
     @Test
     void findAllByAuthorId() {
         var expectedResult = messageService.findAllByAuthorId(1L);
-        MessageReadDto m1 = new MessageReadDto(1, "text1", "tag1", "username1", 1L, null);
-        MessageReadDto m2 = new MessageReadDto(2, "text2", "tag2", "username1", 1L, null);
-        MessageReadDto m3 = new MessageReadDto(3, "text3", "tag3", "username1", 1L, null);
+        MessageReadDto m1 = new MessageReadDto(1, "text1", "tag1", "username1", 1L, null, Collections.emptySet());
+        MessageReadDto m2 = new MessageReadDto(2, "text2", "tag2", "username1", 1L, null, Collections.emptySet());
+        MessageReadDto m3 = new MessageReadDto(3, "text3", "tag3", "username1", 1L, null, Collections.emptySet());
         assertThat(expectedResult).hasSize(3);
         Assertions.assertEquals(expectedResult.get(0), m1);
         Assertions.assertEquals(expectedResult.get(1), m2);

@@ -92,6 +92,7 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
                 .subscriptions(user.getSubscriptions())
                 .avatar(user.getAvatar())
                 .messages(user.getMessages())
+                .likes(user.getLikes())
                 .build();
 
 
@@ -117,6 +118,7 @@ public class UserEditToEntityMapper implements MyCustomMapper<UserEditDto, User>
                 .email(userEditDto.getEmail())
                 .subscriptions(Collections.emptySet())
                 .subscribers(Collections.emptySet())
+                .likes(Collections.emptySet())
                 .build();
 
         // assign role for userICheck. If role doesn't exist, we just add it to DB

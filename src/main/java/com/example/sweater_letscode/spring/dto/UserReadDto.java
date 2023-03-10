@@ -21,4 +21,5 @@ public class UserReadDto {
     private Set<RoleReadDto> roles;
     private Set<UserReadDto> subscriptions;
     private Set<UserReadDto> subscribers;
+    private Set<MessageReadDto> likes;
 }

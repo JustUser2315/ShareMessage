@@ -57,12 +57,6 @@ public class UserService implements UserDetailsService {
 
     }
 
-//    public List<UserReadDto> showAllUsers() {
-//        return userRepository.findAll()
-//                .stream().map(userEntityToReadMapper::map)
-//                .toList();
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var maybeUser = userRepository.findByUsername(username);
@@ -91,15 +85,6 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public boolean doesUserHaveAnActivationCode(String activationCode) {
-//        var mbUser = userRepository.findByActivationCode(activationCode).get();
-//        if(mbUser != null){
-//            mbUser.setActive(true);
-//            mbUser.setActivationCode(null);
-//            userRepository.saveAndFlush(mbUser);
-//            return true;
-//        }
-//        return false;
-
         var mbUser = userRepository.findByActivationCode(activationCode);
         if (mbUser.isPresent()) {
             User user = mbUser.get();
@@ -174,6 +159,14 @@ public class UserService implements UserDetailsService {
     public boolean isAlreadySub(Long userId, Long whoFollowId) {
         Long l = userRepository.isSub(userId, whoFollowId);
         return l>0;
+    }
+    @Transactional
+    public void like(Long userId, Integer messageId){
+        userRepository.like(userId, messageId);
+    }
+    @Transactional
+    public void dislike(Long userId, Integer messageId){
+        userRepository.dislike(userId, messageId);
     }
 
 

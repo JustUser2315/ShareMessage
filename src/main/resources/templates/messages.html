@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <th:block th:insert="/fragments/bootstrap/bootstrap::bootstrap_hat"/>
     <meta charset="UTF-8">
     <title>Messages</title>
@@ -45,6 +47,17 @@
                 <div class="card-body">
                     <p class="card-text" th:text="${m.getText()}">message text</p>
                     <h6 style="color: pink"  class="card-subtitle mb-2 text" th:text="${m.getTag()}">message tag</h6>
+                    <a th:text="${m.getLikes().stream().count()}"></a>
+                    <th:block th:if="${!notLiked.contains(m.getId())}">
+                    <form th:action="@{/user/dislike/{messageId}(messageId=${m.getId()})}" method="post">
+                        <button class="fa-solid fa-heart" type="submit"></button>
+                    </form>
+                    </th:block>
+                    <th:block th:if="${notLiked.contains(m.getId())}">
+                        <form th:action="@{/user/like/{messageId}(messageId=${m.getId()})}" method="post">
+                            <button class="fa-regular fa-heart" type="submit"></button>
+                        </form>
+                    </th:block>
                 </div>
             </div>
         </div>

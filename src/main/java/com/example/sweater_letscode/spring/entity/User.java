@@ -53,6 +53,13 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "channel_id"))
     @Builder.Default
     Set<User> subscribers = new HashSet<>();
+@ManyToMany
+    @JoinTable(name = "users_likes",
+            inverseJoinColumns = @JoinColumn (name="message_id"),
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    Set<Message>likes = new HashSet<>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

@@ -180,11 +180,16 @@ public class UserController {
         var userWhichPageILookAt = userService.findById(id).get();
         var me = userService.findByUsername(userService.usernameFromContext()).get();
         boolean alreadySub = userService.isAlreadySub(me.getId(), id);
+        List<Integer> notLiked = userWhichPageILookAt.getMessages().stream()
+                .map(MessageReadDto::getId)
+                .filter(it -> !messageService.isLiked(me.getId(), it))
+                .toList();
         model.addAttribute("userWhichPageILookAt", userWhichPageILookAt);
         model.addAttribute("user", me);
         model.addAttribute("messages", messages);
         model.addAttribute("isSub", alreadySub);
         model.addAttribute("role", role_admin);
+        model.addAttribute("notLiked", notLiked);
         return "user/see_data";
     }
 
@@ -207,6 +212,18 @@ public class UserController {
             return "redirect:/messages";
         }
         return "user/see_data";
+    }
+    @PostMapping("/like/{messageId}")
+    public String like(@AuthenticationPrincipal User user, @PathVariable Integer messageId, HttpServletRequest request) {
+        userService.like(user.getId(), messageId);
+        String referer = request.getHeader("referer");
+        return "redirect:"+referer;
+    }
+    @PostMapping("/dislike/{messageId}")
+    public String dislike(@AuthenticationPrincipal User user, @PathVariable Integer messageId, HttpServletRequest request) {
+        userService.dislike(user.getId(), messageId);
+        String referer = request.getHeader("referer");
+        return "redirect:"+referer;
     }
 
 

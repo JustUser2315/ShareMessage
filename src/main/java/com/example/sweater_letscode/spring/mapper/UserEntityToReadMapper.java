@@ -44,6 +44,9 @@ public class UserEntityToReadMapper implements MyCustomMapper<User, UserReadDto>
                 .subscribers(user.getSubscribers().stream().map(this::mapSubs).collect(Collectors.toSet()))
                 .subscriptions(user.getSubscriptions().stream().map(this::mapSubs).collect(Collectors.toSet()))
                 .messages(user.getMessages().stream().map(messageEntityToReadMapper::map).collect(Collectors.toSet()))
+                .likes(user.getLikes()
+                        .stream()
+                        .map(messageEntityToReadMapper::map).collect(Collectors.toSet()))
                 .build();
     }
 }

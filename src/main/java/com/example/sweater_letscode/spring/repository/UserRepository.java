@@ -23,4 +23,12 @@ public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredi
     void unsubscribe(Long userId, Long whoFollowId);
     @Query(nativeQuery = true, value = "select count(channel_id) from user_subscriptions where channel_id=:userId and subscriber_id=:whoFollowId")
     Long isSub(Long userId, Long whoFollowId);
+
+    @Query(nativeQuery = true, value = "insert into users_likes (user_id, message_id) values (:userId, :messageId)")
+    @Modifying
+    void like(Long userId, Integer messageId);
+
+    @Query(nativeQuery = true, value = "delete from users_likes where user_id = :userId and message_id = :messageId")
+    @Modifying
+    void dislike(Long userId, Integer messageId);
 }

@@ -33,7 +33,6 @@ public class MySecurityConfiguration {
                         .anyRequest().authenticated())
                 .formLogin(login->login
                         .loginPage("/login")
-//                        .loginProcessingUrl("/login_processing")
                         .failureHandler(authenticationFailureHandler)
                         .defaultSuccessUrl("/messages")
                         .permitAll())

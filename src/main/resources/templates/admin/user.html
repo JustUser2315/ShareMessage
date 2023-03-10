@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <th:block th:insert="/fragments/bootstrap/bootstrap::bootstrap_hat"/>
     <meta charset="UTF-8">
     <title>User Info</title>
@@ -205,13 +207,13 @@ var messages = document.getElementById('Messages');
             <div class="card-body">
                 <p class="card-text" th:text="${m.getText()}">message text</p>
                 <h6 style="color: pink" class="card-subtitle mb-2 text" th:text="${m.getTag()}">message tag</h6>
+                <a class="fa-solid fa-heart" th:text="${m.getLikes().stream().count()}"></a>
                 <form th:action="@{/messages/{id}/delete_message(id=${m.getId()})}" method="post">
                     <button type="submit" class="btn btn-outline-light btn-sm">delete</button>
                 </form>
             </div>
         </div>
     </div>
-    MYMESSAGGEGEG
 </div>
 </body>
 </html>

@@ -3,6 +3,8 @@ package com.example.sweater_letscode.spring.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,4 +26,11 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User author;
     private String picture;
+    @ManyToMany
+    @JoinTable(name = "users_likes",
+    joinColumns = @JoinColumn (name="message_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+            @Builder.Default
+    Set<User>likes = new HashSet<>();
 }
