@@ -6,37 +6,28 @@
     <th:block th:insert="/fragments/bootstrap/bootstrap::bootstrap_hat"/>
     <meta charset="UTF-8">
     <title>Messages</title>
+    <style>
+        #message-search-filter{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <th:block th:insert="~{/fragments/bootstrap/bootstrap::bootstrap_body}"/>
-<th:block th:insert="~{/fragments/bootstrap/bootstrap::NavBarForLoggedUser}"/>
+<th:block th:insert="~{/fragments/bootstrap/bootstrap::NavBarForLoggedUser}"/><br>
 
-<div id="ALL MESSAGES">
+<div id="all-messages">
 <form th:action="@{/messages}">
-    <H1>All Messages</H1>
-   <div id="FILTER">
-       Filter:
-       <div>
-           <input type="text" name="text" placeholder="TextFilter">
-       </div>
-       <div>
-           <input type="text" name="tag" placeholder="TagFilter">
-       </div>
-       <button type="submit">Filter</button>
-   </div>
+   <div id="message-search-filter">
+      Search in messages:
+           <input type="text" name="text" placeholder="Text">
+           <input type="text" name="tag" placeholder="Tag">
+       <button type="submit">Search</button>
+   </div><br>
 
-   <div id="PAGE">
-       Page:
-       <div>
-           <input type="number" name="page" placeholder="Page" th:value="${messages.getMetadata().getNumberOfPage()}">
-       </div>
-       <div>
-           <input type="number" name="size" placeholder="Size" th:value="${messages.getMetadata().getSize()}">
-       </div>
-       <button type="submit">Page filter</button>
-   </div>
 
-<div id="MESSAGES ON PAGE">
+
+<div id="messages-on-page">
     <th:block >
         <div class="card-columns" >
             <div class="card text-white bg-dark mb-3 card border-info" style="max-width: 18rem;" th:each="m:${messages.getContent()}">
@@ -63,6 +54,17 @@
         </div>
     </th:block>
 </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item" th:each="i:${#numbers.sequence(0, messages.getMetadata().getTotalElements()/10, 1)}"><a class="page-link" th:href="@{messages(page=${i},size=10)}" th:text="${i}"></a></li>
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+        </ul>
+    </nav>
 </form>
 </div>
 </body>

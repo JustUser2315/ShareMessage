@@ -6,7 +6,6 @@ import com.example.sweater_letscode.spring.dto.MessageReadDto;
 import com.example.sweater_letscode.spring.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -51,7 +50,6 @@ class MessageServiceTest extends TestBaseApplication {
     }
 
     @Test
-    @Disabled
     void save() {
         MessageEditDto messageEditDto = new MessageEditDto("TestText", "TestTag", null);
         var expectedResult = messageService.save(messageEditDto);

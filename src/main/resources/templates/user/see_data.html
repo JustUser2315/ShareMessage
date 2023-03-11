@@ -70,7 +70,7 @@
         <h1 th:text="${userWhichPageILookAt.getUsername()}"></h1>
     </form>
     <h1 class="user-messages" style="color: red">Messages</h1>
-    <div class="messages" id="Messages">
+    <div class="messages" id="messages">
         <div class="card-columns">
             <div class="card text-white bg-dark mb-3 card border-info" style="max-width: 18rem;"
                  th:each="m:${userWhichPageILookAt.getMessages()}">
@@ -79,7 +79,7 @@
                 <div class="card-body">
                     <p class="card-text" th:text="${m.getText()}">message text</p>
                     <h6 style="color: pink" class="card-subtitle mb-2 text" th:text="${m.getTag()}">message tag</h6>
-                    <a class="fa-solid fa-heart" th:text="${m.getLikes().stream().count()}"></a>
+                    <a th:text="${m.getLikes().stream().count()}"></a>
                     <th:block th:if="${!notLiked.contains(m.getId())}">
                         <form th:action="@{/user/dislike/{messageId}(messageId=${m.getId()})}" method="post">
                             <button class="fa-solid fa-heart" type="submit"></button>

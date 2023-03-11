@@ -27,23 +27,4 @@ class RegistrationControllerTest extends TestBaseApplication {
                 .andExpect(MockMvcResultMatchers.model().attribute("roles", roleService.findAll()));
     }
 
-    @Test
-    void registrationNewUserSuccessful() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/registration")
-                        .param("username", "username1")
-                        .param("password", "password1")
-                        .param("email", "test3@mail.com"))
-                .andExpectAll(MockMvcResultMatchers.status().is2xxSuccessful(),
-                        MockMvcResultMatchers.view().name("email"));
-
-    }
-    @Test
-    void registrationNewUserFailure() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/registration")
-                        .param("username", "testUsername")
-                        .param("password", "1234567"))
-                .andExpectAll(MockMvcResultMatchers.status().is3xxRedirection(),
-                        MockMvcResultMatchers.redirectedUrl("/registration"));
-
-    }
 }

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,17 +26,6 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
-//    @ExceptionHandler
-//    public String handleException(Exception exception, HttpServletRequest httpServletRequest){
-//        log.error("Failed to return response", exception);
-//        return "500";
-//    }
-
-//    @GetMapping
-//    public String showAllUsers(Model model) {
-//        model.addAttribute("users", userService.showAllUsers());
-//        return "admin/users";
-//    }
     @GetMapping
     public String showAllUsersWithFilter(Model model, Pageable pageable, UserFilter filter) {
         var me = userService.findByUsername(userService.usernameFromContext()).get();
@@ -53,15 +43,18 @@ public class AdminController {
     }
     @GetMapping("/{id}")
     public String checkUserInfo(@PathVariable Long id, Model model){
-        model.addAttribute("seeMessages", "false");
+        Optional<UserReadDto> userICheck = userService.findById(id);
+        UserReadDto me = userService.findByUsername(userService.usernameFromContext()).get();
+
+        if(userICheck.isPresent()){
+        model.addAttribute("userICheck",userICheck.get());
+        }
         model.addAttribute("roles", roleService.findAll());
-        model.addAttribute("userICheck", userService.findById(id).get());
-        model.addAttribute("user", userService.findByUsername(userService.usernameFromContext()).get());
+        model.addAttribute("user", me);
         return "admin/user";
     }
     @PostMapping("/{id}")
     public String editUserData(@PathVariable Long id, @ModelAttribute UserEditDto userEditDto){
-
         userService.update(id, userEditDto);
         return "redirect:/admin/users/" + id;
     }

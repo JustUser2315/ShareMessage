@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <title>Admin</title>
     <style>
-        .listy li{
-            width: 25px;
+        .table-of-users li {
+            text-align: center;
+            width: 10px;
+        }
+        #search-user{
             text-align: center;
         }
     </style>
@@ -56,58 +59,20 @@
     </div>
 </nav>
 
-
-<form th:action="@{/admin/users}">
-    Filter:
-    <div>
-        <label>Username:
-            <input type="text" name="username">
-        </label>
-        <label>Email:
-            <input type="text" name="email">
-        </label>
-        <label>Active:
-            <input type="text" name="active">
-        </label>
-        <button type="submit">Filter</button>
-    </div>
-
-    Page:
-    <div>
-        <label>Page:
-            <input type="number" name="page" th:value="${users.getMetadata().getNumberOfPage()}">
-        </label>
-        <label>Size:
-            <input type="number" name="size" th:value="${users.getMetadata().getSize()}">
-        </label>
-        <button type="submit">Page</button>
-    </div>
-</form>
-
-<h1 style="color: darkorange">List of users:</h1>
+<h1 style="color: darkorange">List of users:</h1><br>
 <div>
-    <form th:action="@{/admin/users}" method="post">
-        <!--    <table>-->
-        <!--      <tr>-->
-        <!--        <th>Id</th>-->
-        <!--        <th>Email</th>-->
-        <!--        <th>Username</th>-->
-        <!--        <th>Is active</th>-->
-        <!--        <th>Roles</th>-->
-        <!--      </tr>-->
-        <!--      <tr th:each="u:${users.getContent()}" th:object="${userICheck}"  th:if="${userICheck.getId()}!=${u}">-->
-        <!--        <td><p th:text="*{getId()}" ></p></td>-->
-        <!--        <td><p th:text="*{getEmail()}" ></p></td>-->
-        <!--        <td><p th:text="*{getUsername()}" ></p></td>-->
-        <!--        <td><p th:text="*{isActive()}" ></p></td>-->
-        <!--        <td>-->
-        <!--            <p th:each="role: *{getRoles()}" th:text="${role.getName().replace('ROLE_', '').toLowerCase()}"></p>-->
-        <!--        </td>-->
-        <!--        <td><a th:href="@{/admin/users/{id}(id = *{getId()})}">data</a></td>-->
-        <!--      </tr>-->
-        <!--    </table>-->
+    <div id="search-user">
+    <form th:action="@{/admin/users}">
 
-        <div class="listy">
+            Search user:
+            <input type="text" name="username" placeholder="Username">
+            <input type="text" name="email" placeholder="Email">
+            <input type="text" name="active" placeholder="is Active (true/false)">
+            <button type="submit">Search</button>
+    </form>
+        </div><br>
+    <form th:action="@{/admin/users}" method="post">
+        <div class="table-of-users">
             <ul class="list-group list-group-horizontal-sm list-group-item-info">
                 <li class="list-group-item flex-fill">Id</li>
                 <li class="list-group-item flex-fill">Username</li>
@@ -116,7 +81,8 @@
                 <li class="list-group-item flex-fill">Role</li>
                 <li class="list-group-item flex-fill">Action</li>
             </ul>
-            <ul class="list-group list-group-horizontal-sm" th:if="${u.getId()!=user.getId()}" th:each="u:${users.getContent()}">
+            <ul class="list-group list-group-horizontal-sm" th:if="${u.getId()!=user.getId()}"
+                th:each="u:${users.getContent()}">
                 <li class="list-group-item flex-fill"><a th:text="${u.getId()}"/></li>
                 <li class="list-group-item flex-fill"><a th:text="${u.getUsername()}"/></li>
                 <li class="list-group-item flex-fill"><a th:text="${u.getEmail()}"/></li>
@@ -127,6 +93,21 @@
             </ul>
         </div>
     </form>
-</div>
+</div><br>
+
+<form th:action="@{/admin/users}">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item" th:each="i:${#numbers.sequence(0, users.getMetadata().getTotalElements()/10, 1)}"><a
+                    class="page-link" th:href="@{users(page=${i},size=10)}" th:text="${i}"></a></li>
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+        </ul>
+    </nav>
+</form>
 </body>
 </html>

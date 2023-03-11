@@ -37,24 +37,23 @@ class AdminControllerTest extends TestBaseApplication {
     }
 
     @Test
-    void userInfo() throws Exception {
+    void checkUserInfo() throws Exception {
         mockMvc.perform(get("/admin/users/1"))
-                .andExpectAll(model().attributeExists("roles", "userICheck"),
-                        view().name("admin/userICheck"),
+                .andExpectAll(model().attributeExists("roles", "user"),
+                        view().name("admin/user"),
                         status().is2xxSuccessful(),
                         model().attribute("roles", roleService.findAll()),
-                        model().attribute("userICheck", userService.findById(1L).get()));
+                        model().attribute("user", userService.findById(1L).get()));
     }
 
     @Test
-    void update() throws Exception {
+    void editUserData() throws Exception {
         mockMvc.perform(post("/admin/users/1")
-                        .param("username", "someData")
-                        .param("active", "someData")
-                        .param("roles", "UNKNOWN"))
+                        .param("active", "true"))
 
                 .andExpectAll(redirectedUrl("/admin/users/1"),
                         status().is3xxRedirection());
+
     }
 
     @Test

@@ -6,12 +6,14 @@ import com.example.sweater_letscode.spring.service.MessageService;
 import com.example.sweater_letscode.spring.service.RoleService;
 import com.example.sweater_letscode.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -37,7 +39,11 @@ public class IndexController {
 
     @GetMapping("/logo")
     @ResponseBody
-    public byte[] logo() throws IOException {
-      return imageService.loadLogo("10.png").get();
+    public byte[] logo()  {
+        try {
+            return imageService.loadLogo("logo.png").get();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
     }
 }

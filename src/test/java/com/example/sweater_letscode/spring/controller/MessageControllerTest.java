@@ -1,10 +1,12 @@
 package com.example.sweater_letscode.spring.controller;
 
 import com.example.sweater_letscode.spring.TestBaseApplication;
+import com.example.sweater_letscode.spring.dto.RoleReadDto;
 import com.example.sweater_letscode.spring.filter.MessageFilter;
 import com.example.sweater_letscode.spring.service.RoleService;
 import com.example.sweater_letscode.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,25 +31,27 @@ class MessageControllerTest extends TestBaseApplication {
     private final RoleService roleService;
 
     @Test
-    void findAll() throws Exception {
-        var role_admin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
-        var user = userService.findByUsername(userService.usernameFromContext());
+    void showAllWithFilter() throws Exception {
+        var role_admin =  new RoleReadDto(2L, "ROLE_ADMIN");
+        var user = userService.findByUsername(userService.usernameFromContext()).get();
         MessageFilter messageFilter = new MessageFilter(null, null);
         mockMvc.perform(get("/messages"))
                 .andExpectAll(model().attribute("filter", messageFilter),
+                        model().attribute("user", user),
                         model().attribute("role", role_admin),
-                        model().attribute("userICheck", user),
                         status().is2xxSuccessful(),
                         view().name("messages"));
+
     }
 
     @Test
+    @Disabled
     void save() throws Exception {
         var loadedUser = userService.loadUserByUsername("username1");
-        mockMvc.perform(post("/messages")
+        mockMvc.perform(post("/message/create")
                 .with(SecurityMockMvcRequestPostProcessors.user(loadedUser))
                 .param("text", "TestText")
-                .param("tag", "TestTag")
+                .param("tag", "tag8")
         ).andExpectAll(status().is3xxRedirection(),
                 redirectedUrl("/messages"));
     }

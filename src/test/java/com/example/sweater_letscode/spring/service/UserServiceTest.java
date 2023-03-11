@@ -1,11 +1,7 @@
 package com.example.sweater_letscode.spring.service;
 
 import com.example.sweater_letscode.spring.TestBaseApplication;
-import com.example.sweater_letscode.spring.dto.RoleEditDto;
-import com.example.sweater_letscode.spring.dto.RoleReadDto;
-import com.example.sweater_letscode.spring.dto.UserEditDto;
-import com.example.sweater_letscode.spring.dto.UserReadDto;
-import com.example.sweater_letscode.spring.repository.RoleRepository;
+import com.example.sweater_letscode.spring.dto.*;
 import com.example.sweater_letscode.spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestConstructor;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class UserServiceTest extends TestBaseApplication {
     private final UserService userService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final JdbcTemplate jdbcTemplate;
 
     @Test
@@ -115,9 +111,14 @@ class UserServiceTest extends TestBaseApplication {
     }
     @Test
     void findByUsername(){
-        RoleReadDto readDto =  new RoleReadDto(1L, "ROLE_USER");
-        RoleReadDto readDto2 =  new RoleReadDto(2L, "ROLE_ADMIN");
-        UserReadDto u = new UserReadDto(1L, "test1@mail.com", "username1", false, "activation-code-example",null,Set.of(readDto2, readDto));
+
+        RoleReadDto role1 =  new RoleReadDto(1L, "ROLE_USER");
+        RoleReadDto role2 =  new RoleReadDto(2L, "ROLE_ADMIN");
+        MessageReadDto readDto1 = new MessageReadDto(1, "text1", "tag1", "username1", 1L, null, Collections.emptySet());
+        MessageReadDto readDto2 = new MessageReadDto(3, "text3", "tag3", "username1", 1L, null, Collections.emptySet());
+        MessageReadDto readDto3 = new MessageReadDto(2, "text2", "tag2", "username1", 1L, null, Collections.emptySet());
+//        UserReadDto u = new UserReadDto(1L, "test1@mail.com", "username1", false, "activation-code-example",null,Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+        UserReadDto u = new UserReadDto(1L, "test1@mail.com", "username1", false, "activation-code-example", null, Set.of(readDto1, readDto2, readDto3), Set.of(role1, role2),Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
         var expectedResult = userService.findByUsername("username1");
         Assertions.assertTrue(expectedResult.isPresent());

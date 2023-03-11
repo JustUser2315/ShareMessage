@@ -41,20 +41,13 @@ public class RegistrationController {
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> g-recaptcha-response: {}", reCaptchaResponse);
 
-//        // verify Recaptcha response
         RecaptchaResponse verify = recaptchaRegisterService.verify(reCaptchaResponse);
-//        if(!verify.isSuccess()){
-//            return "redirect:/registration";
-//        }
         if(bindingResult.hasErrors() || !verify.isSuccess() || (bindingResult.hasErrors() && !verify.isSuccess())){
             redirectAttributes.addFlashAttribute("reCaptchaErrors", verify.getAllErrors());
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addFlashAttribute("user", userEditDto);
             return "redirect:/registration";
         }
-
-
-
         userService.registration(userEditDto);
         return "email";
     }

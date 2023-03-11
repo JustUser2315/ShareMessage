@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>User Info</title>
     <style>
-        .listy li {
+        .table-of-user-roles li {
             text-align: center;
             width: 10px;
         }
@@ -17,7 +17,7 @@
             color: cyan;
         }
 
-        #SubscribersDiv, #SubscriptionsDiv, #Messages {
+        #subscribersDiv, #subscriptionsDiv, #messages {
             display: none;
         }
     </style>
@@ -85,7 +85,7 @@
     </ul>
 
     <button class="btn btn-info" onclick="event.preventDefault();
-  var subscribersDiv = document.getElementById('SubscribersDiv');
+  var subscribersDiv = document.getElementById('subscribersDiv');
   if(subscribersDiv.style.display === 'block') {
     subscribersDiv.style.display = 'none';
   } else {
@@ -93,7 +93,7 @@
   }">Show/Hide Subscribers
     </button>
     <button class="btn btn-info" onclick="event.preventDefault();
-  var subscriptionsDiv = document.getElementById('SubscriptionsDiv');
+  var subscriptionsDiv = document.getElementById('subscriptionsDiv');
   if(subscriptionsDiv.style.display === 'block') {
     subscriptionsDiv.style.display = 'none';
   } else {
@@ -101,7 +101,7 @@
   }">Show/Hide Subscriptions
     </button>
     <button class="btn btn-info" onclick="event.preventDefault()
-var messages = document.getElementById('Messages');
+var messages = document.getElementById('messages');
         if(messages.style.display==='block'){
             messages.style.display='none';
         }else {
@@ -111,7 +111,7 @@ var messages = document.getElementById('Messages');
     </button>
 
 
-    <div class="Subscribers" id="SubscribersDiv">
+    <div id="subscribersDiv">
         <h1 style="color: red">Subscribers</h1>
         <ul class="list-group list-group-horizontal-sm list-group-item-info">
             <li class="list-group-item flex-fill">Id</li>
@@ -128,10 +128,11 @@ var messages = document.getElementById('Messages');
             <li class="list-group-item flex-fill"><a th:text="${u.isActive()}"/></li>
             <li class="list-group-item flex-fill" th:each="r:${u.getRoles()}"><a
                     th:text="${r.getName().replace('ROLE_', '')}"/></li>
-            <li class="list-group-item flex-fill"><a th:href="@{/admin/users/{id}(id = ${u.getId()})}">data</a></li>
+            <li class="list-group-item flex-fill" th:if="${u.getId()!=user.getId()}"><a th:href="@{/admin/users/{id}(id = ${u.getId()})}">data</a></li>
+            <li class="list-group-item flex-fill" th:if="${u.getId()==user.getId()}"><a th:href="@{/user/{id}/profile(id = ${user.getId()})}">data</a></li>
         </ul>
     </div>
-    <div class="Subscriptions" id="SubscriptionsDiv">
+    <div id="subscriptionsDiv">
         <h1 style="color: red">Subscriptions</h1>
         <ul class="list-group list-group-horizontal-sm list-group-item-info">
             <li class="list-group-item flex-fill">Id</li>
@@ -148,11 +149,12 @@ var messages = document.getElementById('Messages');
             <li class="list-group-item flex-fill"><a th:text="${u.isActive()}"/></li>
             <li class="list-group-item flex-fill" th:each="r:${u.getRoles()}"><a
                     th:text="${r.getName().replace('ROLE_', '')}"/></li>
-            <li class="list-group-item flex-fill"><a th:href="@{/admin/users/{id}(id = ${u.getId()})}">data</a></li>
+            <li class="list-group-item flex-fill" th:if="${u.getId()!=user.getId()}"><a th:href="@{/admin/users/{id}(id = ${u.getId()})}">data</a></li>
+            <li class="list-group-item flex-fill" th:if="${u.getId()==user.getId()}"><a th:href="@{/user/{id}/profile(id = ${user.getId()})}">data</a></li>
         </ul>
     </div>
 
-    <label style="color: seagreen">Set activity:
+    <br><br><label style="color: seagreen">Set activity:
         <select class="form-select" aria-label="Default select example" name="active" th:value="*{isActive()}">
             <option>true</option>
             <option>false</option>
@@ -176,7 +178,7 @@ var messages = document.getElementById('Messages');
 
 <div class="deprive-role">
     <h1 style="color: darkgoldenrod">Deprive user of role:</h1>
-    <div class="listy">
+    <div class="table-of-user-roles">
         <ul class="list-group list-group-horizontal-sm list-group-item-info">
             <li class="list-group-item flex-fill">Role</li>
             <li class="list-group-item flex-fill">Deprive</li>
@@ -197,7 +199,7 @@ var messages = document.getElementById('Messages');
 </div>
 
 
-<div class="messages" id="Messages">
+<div id="messages">
     <h1 class="user-messages" style="color: red">User messages</h1>
     <div class="card-columns">
         <div class="card text-white bg-dark mb-3 card border-info" style="max-width: 18rem;"

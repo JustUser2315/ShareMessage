@@ -1,9 +1,6 @@
 package com.example.sweater_letscode.spring.controller;
 
-import com.example.sweater_letscode.spring.dto.MessageReadDto;
-import com.example.sweater_letscode.spring.dto.UpdatePasswordEditDto;
-import com.example.sweater_letscode.spring.dto.UserEditDto;
-import com.example.sweater_letscode.spring.dto.UserReadDto;
+import com.example.sweater_letscode.spring.dto.*;
 import com.example.sweater_letscode.spring.entity.User;
 import com.example.sweater_letscode.spring.recaptcha.RecaptchaRegisterService;
 import com.example.sweater_letscode.spring.recaptcha.RecaptchaResponse;
@@ -13,17 +10,20 @@ import com.example.sweater_letscode.spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
@@ -41,7 +41,7 @@ public class UserController {
     GET and POST forms
     */
     @GetMapping("/{id}/profile")
-    public String myProfile(Model model, @PathVariable Long id) {
+    public String show(Model model, @PathVariable Long id) {
         var role_admin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
         var mbUser = userService.findById(id).get();
         model.addAttribute("user", mbUser);
@@ -52,7 +52,7 @@ public class UserController {
 
 
     @PostMapping("/{id}/profile")
-    public String updateMyProfile(@PathVariable Long id, @Valid @ModelAttribute UserEditDto userEditDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute UserEditDto userEditDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addFlashAttribute("user", userEditDto);
@@ -73,8 +73,8 @@ public class UserController {
     }
 
     @PostMapping("/{id}/profile/delete_account")
-    public String deleteMyProfile(@PathVariable Long id, @RequestParam String confirm, HttpServletRequest request,
-                                  @RequestParam(name = ("g-recaptcha-response")) String reCaptchaResponse) throws IOException {
+    public String delete(@PathVariable Long id, @RequestParam String confirm, HttpServletRequest request,
+                         @RequestParam(name = ("g-recaptcha-response")) String reCaptchaResponse) throws IOException {
         log.info(">>>>>>>>>>>>>>>>>>>>>>>> g-recaptcha-response: {}", reCaptchaResponse);
         RecaptchaResponse verify = recaptchaRegisterService.verify(reCaptchaResponse);
         if (confirm.equals("Yes") && verify.isSuccess()) {
@@ -90,7 +90,7 @@ public class UserController {
     GET and POST forms
     */
     @GetMapping("/{id}/profile/update_password")
-    public String updateMyPassword(@PathVariable Long id, Model model, UpdatePasswordEditDto updatePasswordEditDto) {
+    public String updatePassword(@PathVariable Long id, Model model, UpdatePasswordEditDto updatePasswordEditDto) {
         UserReadDto mbUser = userService.findById(id).get();
         model.addAttribute("user", mbUser);
         model.addAttribute("password", updatePasswordEditDto);
@@ -99,11 +99,11 @@ public class UserController {
 
 
     @PostMapping("/{id}/profile/update_password")
-    public String updateMyPassword(@PathVariable Long id, @ModelAttribute @Valid UpdatePasswordEditDto updatePasswordEditDto,
-                                   BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes,
-                                   @AuthenticationPrincipal User user,
-                                   @RequestParam(name = "g-recaptcha-response") String reCaptchaResponse) {
+    public String updatePassword(@PathVariable Long id, @ModelAttribute @Valid UpdatePasswordEditDto updatePasswordEditDto,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes,
+                                 @AuthenticationPrincipal User user,
+                                 @RequestParam(name = "g-recaptcha-response") String reCaptchaResponse) {
         boolean passwordMatch = new BCryptPasswordEncoder().matches(updatePasswordEditDto.getOldPassword(), user.getPassword());
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> g-recaptcha-response: {}", reCaptchaResponse);
         RecaptchaResponse verify = recaptchaRegisterService.verify(reCaptchaResponse);
@@ -125,7 +125,7 @@ public class UserController {
     User's messages viewing and deleting by himself
     */
     @GetMapping("/{id}/profile/messages")
-    public String showMyMessages(@PathVariable Long id, Model model) {
+    public String showMessages(@PathVariable Long id, Model model) {
         var role_admin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
         var user = userService.findById(id).get();
         var messages = messageService.findAllByAuthorId(id);
@@ -151,9 +151,12 @@ public class UserController {
     */
     @GetMapping("/{id}/profile/avatar")
     @ResponseBody()
-    public byte[] findAvatar(@PathVariable Long id) throws IOException {
-        return userService.findAvatar(id)
-                .get();
+    public byte[] findAvatar(@PathVariable Long id){
+        try {
+            return userService.findAvatar(id).get();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
 
     }
 
@@ -172,47 +175,53 @@ public class UserController {
         model.addAttribute("subscribers", me.getSubscribers());
         return "user/subscribers";
     }
-
-    @GetMapping("/{id}/profile/show")
-    public String showProfile(Model model, @PathVariable Long id) {
-        var role_admin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
-        List<MessageReadDto> messages = messageService.findAllByAuthorId(id);
-        var userWhichPageILookAt = userService.findById(id).get();
-        var me = userService.findByUsername(userService.usernameFromContext()).get();
-        boolean alreadySub = userService.isAlreadySub(me.getId(), id);
-        List<Integer> notLiked = userWhichPageILookAt.getMessages().stream()
-                .map(MessageReadDto::getId)
-                .filter(it -> !messageService.isLiked(me.getId(), it))
-                .toList();
-        model.addAttribute("userWhichPageILookAt", userWhichPageILookAt);
-        model.addAttribute("user", me);
-        model.addAttribute("messages", messages);
-        model.addAttribute("isSub", alreadySub);
-        model.addAttribute("role", role_admin);
-        model.addAttribute("notLiked", notLiked);
-        return "user/see_data";
-    }
-
     @PostMapping("/{id}/profile/subscribe")
-    public String subscribe(Model model, @PathVariable Long id) {
-        //userId = channelId, id = whoFollowId
+    public String subscribe(Model model, @PathVariable Long id, HttpServletRequest request) {
+        /*
+        * userId = channelId, id = whoFollowId
+        * */
         var user = userService.findByUsername(userService.usernameFromContext()).get();
         if (user.getId() != null && id != null) {
             userService.subscribe(user.getId(), id);
-            return "redirect:/messages";
+            return "redirect:"+request.getHeader("referer");
         }
         return "user/see_data";
     }
 
     @PostMapping("/{id}/profile/unsubscribe")
-    public String unsubscribe(Model model, @PathVariable Long id) {
+    public String unsubscribe(Model model, @PathVariable Long id, HttpServletRequest request) {
         var user = userService.findByUsername(userService.usernameFromContext()).get();
         if (user.getId() != null && id != null) {
             userService.unsubscribe(user.getId(), id);
-            return "redirect:/messages";
+            return "redirect:"+request.getHeader("referer");
         }
         return "user/see_data";
     }
+    @GetMapping("/{id}/profile/show")
+    public String showProfile(Model model, @PathVariable Long id) {
+        RoleReadDto roleAdmin = roleService.findAll().stream().filter(roleReadDto -> roleReadDto.getName().equals("ROLE_ADMIN")).findFirst().get();
+        List<MessageReadDto> messages = messageService.findAllByAuthorId(id);
+        var userWhosePageILookAt = userService.findById(id);
+        if(userWhosePageILookAt.isPresent()){
+        model.addAttribute("userWhichPageILookAt", userWhosePageILookAt.get());
+            var notLiked = new HashSet<>();
+            for (MessageReadDto message : userWhosePageILookAt.get().getMessages()) {
+                if (!messageService.isLiked(userWhosePageILookAt.get().getId(), message.getId())) {
+                    notLiked.add(message.getId());
+                }
+            }
+        model.addAttribute("notLiked", notLiked);
+        }
+        var me = userService.findByUsername(userService.usernameFromContext()).get();
+        boolean alreadySub = userService.isAlreadySub(me.getId(), id);
+        model.addAttribute("user", me);
+        model.addAttribute("messages", messages);
+        model.addAttribute("isSub", alreadySub);
+        model.addAttribute("role", roleAdmin);
+        return "user/see_data";
+    }
+
+
     @PostMapping("/like/{messageId}")
     public String like(@AuthenticationPrincipal User user, @PathVariable Integer messageId, HttpServletRequest request) {
         userService.like(user.getId(), messageId);
